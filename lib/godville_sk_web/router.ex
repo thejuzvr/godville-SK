@@ -66,6 +66,9 @@ defmodule GodvilleSkWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{GodvilleSkWeb.UserAuth, :ensure_authenticated}] do
+      live "/hero/new", HeroCreationLive, :new
+      live "/dashboard", DashboardLive, :index
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
