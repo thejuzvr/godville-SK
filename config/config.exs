@@ -14,7 +14,6 @@ config :godville_sk,
 # Configures the endpoint
 config :godville_sk, GodvilleSkWeb.Endpoint,
   url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: GodvilleSkWeb.ErrorHTML, json: GodvilleSkWeb.ErrorJSON],
     layout: false

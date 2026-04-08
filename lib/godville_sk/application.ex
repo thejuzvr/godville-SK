@@ -12,8 +12,6 @@ defmodule GodvilleSk.Application do
       GodvilleSk.Repo,
       {DNSCluster, query: Application.get_env(:godville_sk, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GodvilleSk.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: GodvilleSk.Finch},
       # Start a worker by calling: GodvilleSk.Worker.start_link(arg)
       # {GodvilleSk.Worker, arg},
       # Start to serve requests, typically the last entry
