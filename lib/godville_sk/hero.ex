@@ -22,7 +22,10 @@ defmodule GodvilleSk.Hero do
     gold: 0,
     hp: 100,
     max_hp: 100,
-    exp: 0,
+    xp: 0,
+    inventory: [],
+    inventory_capacity: 10,
+    location: "Балмора",
     # Атрибуты TES (0-100+)
     strength: 50,
     intelligence: 50,
@@ -97,13 +100,83 @@ defmodule GodvilleSk.Hero do
 
   # --- State Handlers ---
 
+  defp handle_status(:leveling_up, state) do
+    state
+    |> Map.put(:status, :idle)
+    |> add_to_log("Закончил дела и готов к новым приключениям!")
+  end
+
+  defp handle_status(:fleeing, state) do
+    state
+    |> Map.put(:status, :idle)
+    |> add_to_log("Скрылся от опасности. Перевожу дух.")
+  end
+
+  defp handle_status(:trading, state) do
+    state
+    |> Map.put(:status, :idle)
+    |> add_to_log("Торговля окончена. Карманы звенят.")
+  end
+
+  defp handle_status(_status, %{xp: xp, level: level} = state) when xp >= level * 100 do
+    attributes = [:strength, :intelligence, :willpower, :agility, :speed, :endurance, :personality, :luck]
+    attr = Enum.random(attributes)
+    current_val = Map.get(state, attr)
+
+    state
+    |> Map.put(:status, :leveling_up)
+    |> Map.put(:level, level + 1)
+    |> Map.put(:xp, 0)
+    |> Map.put(:max_hp, state.max_hp + 10)
+    |> Map.put(:hp, state.max_hp + 10)
+    |> Map.put(attr, current_val + 1)
+    |> add_to_log("УРОВЕНЬ ПОВЫШЕН! Теперь вы уровень #{level + 1}! #{attr} +1.")
+  end
+
+  defp handle_status(:combat, %{hp: hp, max_hp: max} = state) when hp < max * 0.15 do
+    attr_mod = modifier(state.agility)
+    luck_value = state.luck
+    dc = 12
+
+    case roll_check(attr_mod, luck_value, dc) do
+      {:success, _roll, _total, log} ->
+        state
+        |> Map.put(:status, :fleeing)
+        |> Map.put(:target, nil)
+        |> add_to_log("Побег: #{log}. Успешно сбежал из боя!")
+
+      {:fail, _roll, _total, log} ->
+        state = add_to_log(state, "Побег: #{log}. Не удалось сбежать!")
+        # Proceed with normal combat step since flee failed
+        do_combat_step(state)
+    end
+  end
+
+  defp handle_status(:idle, %{inventory: inv, inventory_capacity: cap} = state) when length(inv) >= cap do
+    num_items = length(inv)
+    earned_gold = Enum.reduce(1..num_items, 0, fn _, acc -> acc + Enum.random(5..15) end)
+
+    state
+    |> Map.put(:status, :trading)
+    |> Map.put(:inventory, [])
+    |> Map.put(:gold, state.gold + earned_gold)
+    |> add_to_log("Инвентарь полон! Продал #{num_items} вещей за #{earned_gold} золотых.")
+  end
+
   defp handle_status(:idle, state) do
-    case Enum.random([:think, :event, :quest, :combat, :steal]) do
-      :think  -> think(state)
-      :event  -> random_event(state)
-      :quest  -> start_quest(state)
-      :combat -> start_combat(state)
-      :steal  -> attempt_steal(state)
+    if :rand.uniform() <= 0.2 do
+      new_location = GameData.get_location()
+      state
+      |> Map.put(:location, new_location)
+      |> add_to_log("Отправился в путешествие... Новая локация: #{new_location}")
+    else
+      case Enum.random([:think, :event, :quest, :combat, :steal]) do
+        :think  -> think(state)
+        :event  -> random_event(state)
+        :quest  -> start_quest(state)
+        :combat -> start_combat(state)
+        :steal  -> attempt_steal(state)
+      end
     end
   end
 
@@ -127,13 +200,13 @@ defmodule GodvilleSk.Hero do
     total = state.target.steps
 
     if progress >= total do
-      new_exp = state.exp + 10
+      new_xp = state.xp + 10
       state
       |> Map.put(:status, :idle)
       |> Map.put(:gold, state.gold + state.target.reward)
-      |> Map.put(:exp, new_exp)
+      |> Map.put(:xp, new_xp)
       |> add_to_log("Квест '#{state.target.name}' выполнен! Получено #{state.target.reward} золотых.")
-      |> maybe_level_up()
+      # We don't call maybe_level_up here since the level up guard will catch it next tick
     else
       state
       |> Map.put(:quest_progress, progress)
@@ -142,6 +215,10 @@ defmodule GodvilleSk.Hero do
   end
 
   defp handle_status(:combat, state) do
+    do_combat_step(state)
+  end
+
+  defp do_combat_step(state) do
     {_hero_hits, damage, log_msg} = perform_attack(state, state.target)
     
     new_target_hp = state.target.hp - damage
@@ -150,14 +227,18 @@ defmodule GodvilleSk.Hero do
     state = add_to_log(state, log_msg)
 
     if new_target_hp <= 0 do
-      new_exp = state.exp + (state.target.level * 5)
+      new_xp = state.xp + (state.target.level * 5)
+      loot = GameData.get_random_loot(state.level)
+      new_inventory = [loot | state.inventory]
+
       state
       |> Map.put(:status, :idle)
       |> Map.put(:target, nil)
       |> Map.put(:gold, state.gold + (state.level * 5))
-      |> Map.put(:exp, new_exp)
-      |> add_to_log("Победа над #{updated_target.name}!")
-      |> maybe_level_up()
+      |> Map.put(:xp, new_xp)
+      |> Map.put(:inventory, new_inventory)
+      |> add_to_log("Победа над #{updated_target.name}! Получен предмет: #{loot}")
+      # We don't call maybe_level_up here since the level up guard will catch it next tick
     else
       monster_damage = max(1, updated_target.damage - modifier(state.agility)) 
       new_hero_hp = state.hp - monster_damage
@@ -195,7 +276,7 @@ defmodule GodvilleSk.Hero do
   end
 
   defp start_combat(state) do
-    monster = Enum.random(GameData.monsters())
+    monster = GameData.get_random_monster(state.level)
     state
     |> Map.put(:status, :combat)
     |> Map.put(:target, monster)
@@ -262,20 +343,6 @@ defmodule GodvilleSk.Hero do
 
   defp modifier(value), do: div(value - 50, 10)
 
-  defp maybe_level_up(state) do
-    needed_exp = state.level * 100
-    if state.exp >= needed_exp do
-      state
-      |> Map.put(:level, state.level + 1)
-      |> Map.put(:exp, 0)
-      |> Map.put(:max_hp, state.max_hp + 10)
-      |> Map.put(:hp, state.max_hp + 10)
-      |> add_to_log("УРОВЕНЬ ПОВЫШЕН! Теперь вы уровень #{state.level + 1}!")
-    else
-      state
-    end
-  end
-
   # --- DB & Engine Helpers ---
 
   defp load_from_db(id) do
@@ -292,7 +359,7 @@ defmodule GodvilleSk.Hero do
       gold: hero.gold,
       hp: hero.hp,
       max_hp: hero.max_hp,
-      exp: hero.exp,
+      xp: hero.exp,
       strength: attrs["strength"] || 50,
       intelligence: attrs["intelligence"] || 50,
       willpower: attrs["willpower"] || 50,
@@ -334,7 +401,7 @@ defmodule GodvilleSk.Hero do
         gold: state.gold,
         hp: state.hp,
         level: state.level,
-        exp: state.exp,
+        exp: state.xp,
         attributes: attrs
       })
     end
