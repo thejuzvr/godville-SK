@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "elixir-pro": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "0c67e6d5c877c5e89e4d073014cad4925e842dfd0e4fb4e2e7d89fde9763c43c"
+    },
+    "i18n-localization": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "7f3f5255cfb91f2d97a870feee48141d9063bc0c02b7227732cf54ae0cd8fc55"
+    }
+  }
+}
