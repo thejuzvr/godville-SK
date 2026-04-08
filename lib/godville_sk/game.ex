@@ -5,100 +5,63 @@ defmodule GodvilleSk.Game do
 
   import Ecto.Query, warn: false
   alias GodvilleSk.Repo
-
   alias GodvilleSk.Game.Hero
 
-  @doc """
-  Returns the list of heroes.
-
-  ## Examples
-
-      iex> list_heroes()
-      [%Hero{}, ...]
-
-  """
   def list_heroes do
     Repo.all(Hero)
   end
 
-  @doc """
-  Gets a single hero.
-
-  Raises `Ecto.NoResultsError` if the Hero does not exist.
-
-  ## Examples
-
-      iex> get_hero!(123)
-      %Hero{}
-
-      iex> get_hero!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_hero!(id), do: Repo.get!(Hero, id)
 
-  @doc """
-  Creates a hero.
+  def get_hero_by_user_id(user_id) do
+    Repo.get_by(Hero, user_id: user_id)
+  end
 
-  ## Examples
-
-      iex> create_hero(%{field: value})
-      {:ok, %Hero{}}
-
-      iex> create_hero(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_hero(attrs \\ %{}) do
     %Hero{}
     |> Hero.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a hero.
-
-  ## Examples
-
-      iex> update_hero(hero, %{field: new_value})
-      {:ok, %Hero{}}
-
-      iex> update_hero(hero, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_hero(%Hero{} = hero, attrs) do
     hero
     |> Hero.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a hero.
-
-  ## Examples
-
-      iex> delete_hero(hero)
-      {:ok, %Hero{}}
-
-      iex> delete_hero(hero)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_hero(%Hero{} = hero) do
     Repo.delete(hero)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking hero changes.
-
-  ## Examples
-
-      iex> change_hero(hero)
-      %Ecto.Changeset{data: %Hero{}}
-
-  """
   def change_hero(%Hero{} = hero, attrs \\ %{}) do
     Hero.changeset(hero, attrs)
+  end
+
+  @doc """
+  Ensures the hero's GenServer process is running. Starts it if not already running.
+  """
+  def ensure_hero_running(%Hero{} = hero) do
+    case :global.whereis_name({:hero, hero.name}) do
+      :undefined ->
+        spec = {GodvilleSk.Hero, [id: hero.id, name: hero.name]}
+        case DynamicSupervisor.start_child(GodvilleSk.HeroSupervisor, spec) do
+          {:ok, pid} -> {:ok, pid}
+          {:error, {:already_started, pid}} -> {:ok, pid}
+          error -> error
+        end
+      pid ->
+        {:ok, pid}
+    end
+  end
+
+  @doc """
+  Gets the live state of a hero from its GenServer process.
+  Returns nil if the process is not running.
+  """
+  def get_hero_live_state(%Hero{} = hero) do
+    case :global.whereis_name({:hero, hero.name}) do
+      :undefined -> nil
+      _pid -> GodvilleSk.Hero.get_state(hero.name)
+    end
   end
 end

@@ -1,11 +1,12 @@
 defmodule GodvilleSkWeb.HeroCreationLive do
   use GodvilleSkWeb, :live_view
 
+  alias GodvilleSk.Game
+
   def render(assigns) do
     ~H"""
-    <div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
+    <div class="min-h-screen flex items-center justify-center p-4">
       <div class="max-w-3xl w-full">
-        <!-- Decorative top border -->
         <div class="flex items-center justify-center mb-8">
           <div class="h-px bg-border/30 flex-1"></div>
           <svg class="w-8 h-8 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -14,119 +15,94 @@ defmodule GodvilleSkWeb.HeroCreationLive do
           <div class="h-px bg-border/30 flex-1"></div>
         </div>
 
-        <!-- Main content card -->
         <div class="bg-card border border-border/50 shadow-2xl p-8 md:p-12 relative overflow-hidden">
-          <!-- Decorative corner elements -->
           <div class="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 border-primary/20"></div>
           <div class="absolute top-0 right-0 w-24 h-24 border-r-2 border-t-2 border-primary/20"></div>
           <div class="absolute bottom-0 left-0 w-24 h-24 border-l-2 border-b-2 border-primary/20"></div>
           <div class="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-primary/20"></div>
 
           <div class="relative z-10">
-            <!-- Title -->
             <h1 class="font-headline text-3xl md:text-5xl text-center text-primary mb-3 tracking-wider">
-              HERO CREATION
+              СОЗДАНИЕ ГЕРОЯ
             </h1>
             <div class="flex items-center justify-center mb-10">
               <div class="h-px bg-primary/40 w-20"></div>
               <p class="font-body text-sm md:text-base text-center text-foreground/70 mx-4 italic">
-                Forge Your Destiny
+                Выкуй свою судьбу
               </p>
               <div class="h-px bg-primary/40 w-20"></div>
             </div>
 
-            <!-- Form -->
             <.form for={@form} id="hero_creation_form" phx-submit="save" class="space-y-8 max-w-xl mx-auto">
-              <!-- Name Field -->
               <div>
                 <label for="hero-name" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
-                  Hero Name
+                  Имя героя
                 </label>
                 <.input
                   field={@form[:name]}
                   type="text"
                   id="hero-name"
-                  placeholder="Enter your name..."
+                  placeholder="Введи имя..."
                   required
-                  class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground placeholder:text-foreground/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+                  class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground placeholder:text-foreground/40 focus:border-primary focus:outline-none"
                 />
               </div>
 
-              <!-- Race Selection -->
               <div>
                 <label for="hero-race" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
-                  Race
+                  Раса
                 </label>
                 <div class="relative">
                   <.input
                     field={@form[:race]}
                     type="select"
                     id="hero-race"
-                    options={["Imperial", "Nord", "Breton", "Redguard", "Altmer", "Bosmer", "Dunmer", "Orsimer", "Khajiit", "Argonian"]}
-                    prompt="Select your race..."
+                    options={["Имперец", "Норд", "Бретонец", "Редгард", "Альтмер", "Босмер", "Данмер", "Орсимер", "Каджит", "Аргонианин"]}
+                    prompt="Выбери расу..."
                     required
-                    class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 appearance-none cursor-pointer"
+                    class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none appearance-none cursor-pointer"
                   />
-                  <!-- Custom dropdown arrow -->
                   <svg class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M6 9L12 15L18 9" />
                   </svg>
                 </div>
               </div>
 
-              <!-- Class Selection -->
               <div>
                 <label for="hero-class" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
-                  Class
+                  Класс
                 </label>
                 <div class="relative">
                   <.input
                     field={@form[:class]}
                     type="select"
                     id="hero-class"
-                    options={["Warrior", "Mage", "Thief", "Assassin", "Knight"]}
-                    prompt="Select your class..."
+                    options={["Воин", "Маг", "Вор", "Убийца", "Рыцарь"]}
+                    prompt="Выбери класс..."
                     required
-                    class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 appearance-none cursor-pointer"
+                    class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none appearance-none cursor-pointer"
                   />
-                  <!-- Custom dropdown arrow -->
                   <svg class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M6 9L12 15L18 9" />
                   </svg>
                 </div>
               </div>
 
-              <!-- Submit Button -->
+              <div :if={@error} class="p-3 bg-destructive/20 border border-destructive/50 text-destructive-foreground text-sm font-body">
+                {@error}
+              </div>
+
               <div class="pt-4">
                 <button
                   type="submit"
-                  class="font-headline w-full px-8 py-4 bg-primary text-background hover:bg-primary/90 border-2 border-primary hover:border-primary/80 transition-all duration-300 text-lg tracking-wide shadow-lg hover:shadow-xl hover:shadow-primary/30"
+                  phx-disable-with="Создаём героя..."
+                  class="font-headline w-full px-8 py-4 bg-primary text-background hover:bg-primary/90 border-2 border-primary transition-all duration-300 text-lg tracking-wide shadow-lg"
                 >
-                  Begin Journey
+                  Начать странствие
                 </button>
               </div>
             </.form>
-
-            <!-- Bottom decorative element -->
-            <div class="flex items-center justify-center mt-10">
-              <div class="h-px bg-border/30 w-24"></div>
-              <svg class="w-6 h-6 mx-3 text-primary/40" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              <div class="h-px bg-border/30 w-24"></div>
-            </div>
           </div>
-        </div>
-
-        <!-- Decorative bottom border -->
-        <div class="flex items-center justify-center mt-8">
-          <div class="h-px bg-border/30 flex-1"></div>
-          <svg class="w-6 h-6 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-            <path d="M2 17L12 22L22 17" />
-            <path d="M2 12L12 17L22 12" />
-          </svg>
-          <div class="h-px bg-border/30 flex-1"></div>
         </div>
       </div>
     </div>
@@ -134,10 +110,49 @@ defmodule GodvilleSkWeb.HeroCreationLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "hero"))}
+    user = socket.assigns.current_user
+
+    case Game.get_hero_by_user_id(user.id) do
+      nil ->
+        {:ok, assign(socket, form: to_form(%{}, as: "hero"), error: nil)}
+      _hero ->
+        {:ok, push_navigate(socket, to: ~p"/dashboard")}
+    end
   end
 
-  def handle_event("save", %{"hero" => _hero_params}, socket) do
-    {:noreply, push_navigate(socket, to: ~p"/dashboard")}
+  def handle_event("save", %{"hero" => hero_params}, socket) do
+    user = socket.assigns.current_user
+
+    attrs = %{
+      name: hero_params["name"],
+      race: hero_params["race"],
+      class: hero_params["class"],
+      level: 1,
+      hp: 100,
+      max_hp: 100,
+      exp: 0,
+      gold: 100,
+      perks: [],
+      user_id: user.id,
+      attributes: %{
+        "strength" => 50,
+        "intelligence" => 50,
+        "willpower" => 50,
+        "agility" => 50,
+        "speed" => 50,
+        "endurance" => 50,
+        "personality" => 50,
+        "luck" => 50
+      }
+    }
+
+    case Game.create_hero(attrs) do
+      {:ok, hero} ->
+        Game.ensure_hero_running(hero)
+        {:noreply, push_navigate(socket, to: ~p"/dashboard")}
+
+      {:error, _changeset} ->
+        {:noreply, assign(socket, error: "Не удалось создать героя. Проверь введённые данные.")}
+    end
   end
 end

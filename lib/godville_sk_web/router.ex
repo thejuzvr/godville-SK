@@ -51,6 +51,7 @@ defmodule GodvilleSkWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
+      layout: false,
       on_mount: [{GodvilleSkWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
@@ -65,6 +66,7 @@ defmodule GodvilleSkWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
+      layout: false,
       on_mount: [{GodvilleSkWeb.UserAuth, :ensure_authenticated}] do
       live "/hero/new", HeroCreationLive, :new
       live "/dashboard", DashboardLive, :index

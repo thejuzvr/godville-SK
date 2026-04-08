@@ -56,6 +56,24 @@ defmodule GodvilleSk.Hero do
     GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
   end
 
+  def child_spec(opts) do
+    %{
+      id: {__MODULE__, opts[:name] || opts[:id]},
+      start: {__MODULE__, :start_link, [opts]},
+      restart: :transient
+    }
+  end
+
+  @doc "Returns the current state of the hero GenServer."
+  def get_state(hero_name) do
+    GenServer.call(via_tuple(hero_name), :get_state)
+  end
+
+  @doc "Sends a divine whisper message to the hero's log."
+  def send_whisper(hero_name, text) do
+    GenServer.cast(via_tuple(hero_name), {:divine_whisper, text})
+  end
+
   defp fetch_name_from_db(id) do
     Repo.get(HeroSchema, id).name
   end
@@ -96,6 +114,18 @@ defmodule GodvilleSk.Hero do
     save_to_db(state)
     schedule_save()
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_call(:get_state, _from, state) do
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_cast({:divine_whisper, text}, state) do
+    new_state = add_to_log(state, "Глас небес: \"#{text}\"")
+    broadcast_update(new_state)
+    {:noreply, new_state}
   end
 
   # --- State Handlers ---

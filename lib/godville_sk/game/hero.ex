@@ -21,7 +21,7 @@ defmodule GodvilleSk.Game.Hero do
   @doc false
   def changeset(hero, attrs) do
     hero
-    |> cast(attrs, [:name, :race, :class, :level, :gold, :hp, :max_hp, :exp, :attributes, :perks])
-    |> validate_required([:name, :race, :class, :level, :gold, :hp, :max_hp, :exp, :perks])
+    |> cast(attrs, [:name, :race, :class, :level, :gold, :hp, :max_hp, :exp, :attributes, :perks, :user_id])
+    |> validate_required([:name, :race, :class, :level, :gold, :hp, :max_hp, :exp, :perks, :user_id])
   end
 end

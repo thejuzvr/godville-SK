@@ -6,116 +6,118 @@ defmodule GodvilleSkWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <div class="max-w-md w-full">
-        <!-- Decorative top border -->
-        <div class="flex items-center justify-center mb-8">
-          <div class="h-px bg-border/30 flex-1"></div>
-          <svg class="w-8 h-8 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-          </svg>
-          <div class="h-px bg-border/30 flex-1"></div>
+    <div class="flex h-screen bg-[#0e0c07] overflow-hidden">
+      <!-- Left atmospheric panel -->
+      <div class="hidden lg:flex lg:w-[58%] relative flex-col overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0a0804] via-[#16120a] to-[#0a0804]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,rgba(180,148,70,0.10)_0%,transparent_70%)]"></div>
+        <div class="absolute top-0 inset-x-0 h-64 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(180,148,70,0.06)_0%,transparent_100%)]"></div>
+        <div class="absolute inset-0 opacity-[0.03]"
+             style="background-image: repeating-linear-gradient(0deg, #c4a046 0px, transparent 1px, transparent 60px),
+                                      repeating-linear-gradient(90deg, #c4a046 0px, transparent 1px, transparent 60px)">
         </div>
-
-        <!-- Main content card -->
-        <div class="bg-card border border-border/50 shadow-2xl p-8 md:p-10 relative overflow-hidden">
-          <!-- Decorative corner elements -->
-          <div class="absolute top-0 left-0 w-20 h-20 border-l-2 border-t-2 border-primary/20"></div>
-          <div class="absolute top-0 right-0 w-20 h-20 border-r-2 border-t-2 border-primary/20"></div>
-          <div class="absolute bottom-0 left-0 w-20 h-20 border-l-2 border-b-2 border-primary/20"></div>
-          <div class="absolute bottom-0 right-0 w-20 h-20 border-r-2 border-b-2 border-primary/20"></div>
-
-          <div class="relative z-10">
-            <!-- Title -->
-            <h1 class="font-headline text-2xl md:text-3xl text-center text-primary mb-2 tracking-wider">
-              Register for an account
-            </h1>
-
-            <!-- Log in link -->
-            <p class="font-body text-center text-foreground/70 mb-8">
-              Already have an account?
-              <.link navigate={~p"/users/log_in"} class="text-primary hover:text-primary/80 underline transition-colors">
-                Log in
-              </.link>
-            </p>
-
-            <!-- Form -->
-            <.form
-              for={@form}
-              id="registration_form"
-              phx-submit="save"
-              phx-change="validate"
-              phx-trigger-action={@trigger_submit}
-              action={~p"/users/log_in?_action=registered"}
-              method="post"
-              class="space-y-6"
-            >
-              <.error :if={@check_errors}>
-                Oops, something went wrong! Please check the errors below.
-              </.error>
-
-              <!-- Email Field -->
-              <div>
-                <label for="email" class="font-headline block text-sm text-primary/90 mb-2 tracking-wide">
-                  Email
-                </label>
-                <.input
-                  field={@form[:email]}
-                  type="email"
-                  id="email"
-                  placeholder="your@email.com"
-                  required
-                  class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground placeholder:text-foreground/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
-                />
-              </div>
-
-              <!-- Password Field -->
-              <div>
-                <label for="password" class="font-headline block text-sm text-primary/90 mb-2 tracking-wide">
-                  Password
-                </label>
-                <.input
-                  field={@form[:password]}
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  required
-                  class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground placeholder:text-foreground/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
-                />
-              </div>
-
-              <!-- Submit Button -->
-              <div class="pt-2">
-                <button
-                  type="submit"
-                  phx-disable-with="Creating account..."
-                  class="font-headline w-full px-6 py-3 bg-primary text-background hover:bg-primary/90 border-2 border-primary hover:border-primary/80 transition-all duration-300 text-lg tracking-wide shadow-lg hover:shadow-xl hover:shadow-primary/30"
-                >
-                  Create an account
-                </button>
-              </div>
-            </.form>
-
-            <!-- Bottom decorative element -->
-            <div class="flex items-center justify-center mt-8">
-              <div class="h-px bg-border/30 w-20"></div>
-              <svg class="w-5 h-5 mx-3 text-primary/40" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="3" />
+        <div class="relative z-10 p-8 flex items-center gap-2.5">
+          <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2L2 7v5c0 5.25 4.25 10.15 10 11.25C17.75 22.15 22 17.25 22 12V7L12 2z" />
+          </svg>
+          <span class="font-headline text-primary/90 text-sm tracking-widest uppercase">ElderScrollsIdle</span>
+        </div>
+        <div class="relative z-10 flex-1 flex items-center justify-center">
+          <div class="relative">
+            <div class="w-64 h-64 rounded-full border border-primary/10 absolute -inset-8 animate-[spin_40s_linear_infinite]"></div>
+            <div class="w-48 h-48 rounded-full border border-primary/15 absolute -inset-4"></div>
+            <svg class="w-40 h-40 text-primary/20" viewBox="0 0 200 200" fill="currentColor">
+              <polygon points="100,10 120,80 195,80 135,125 158,195 100,155 42,195 65,125 5,80 80,80" />
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg class="w-16 h-16 text-primary/40" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
               </svg>
-              <div class="h-px bg-border/30 w-20"></div>
             </div>
           </div>
         </div>
+        <div class="relative z-10 p-8 pb-12 border-t border-primary/10">
+          <p class="font-headline italic text-foreground/70 text-base leading-relaxed">
+            "Знание — самое могущественное оружие из всех существующих."
+          </p>
+          <p class="font-body text-foreground/40 text-sm mt-2">— Архимаг Нирус</p>
+        </div>
+      </div>
 
-        <!-- Decorative bottom border -->
-        <div class="flex items-center justify-center mt-8">
-          <div class="h-px bg-border/30 flex-1"></div>
-          <svg class="w-6 h-6 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-            <path d="M2 17L12 22L22 17" />
-            <path d="M2 12L12 17L22 12" />
-          </svg>
-          <div class="h-px bg-border/30 flex-1"></div>
+      <!-- Right form panel -->
+      <div class="w-full lg:w-[42%] bg-[#13100a] flex flex-col items-center justify-center p-8 lg:p-12 relative">
+        <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+
+        <div class="w-full max-w-sm">
+          <div class="flex items-center justify-center gap-2 mb-8 lg:hidden">
+            <svg class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7v5c0 5.25 4.25 10.15 10 11.25C17.75 22.15 22 17.25 22 12V7L12 2z" />
+            </svg>
+            <span class="font-headline text-primary text-sm tracking-widest">ElderScrollsIdle</span>
+          </div>
+
+          <h1 class="font-headline text-2xl text-foreground text-center mb-2 leading-tight">
+            Добро пожаловать, странник
+          </h1>
+          <p class="font-body text-foreground/50 text-sm text-center mb-8 leading-relaxed">
+            Ваша эпическая история начинается здесь.<br/>Войдите или создайте своего героя.
+          </p>
+
+          <!-- Tabs -->
+          <div class="flex w-full mb-6 border border-border/40">
+            <.link
+              navigate={~p"/users/log_in"}
+              class="flex-1 py-2.5 text-center text-sm font-headline tracking-wide text-foreground/50 hover:text-foreground/80 transition-colors"
+            >
+              Вход
+            </.link>
+            <span class="flex-1 py-2.5 text-center text-sm font-headline tracking-wide bg-primary/15 text-primary border-b-2 border-primary cursor-default">
+              Регистрация
+            </span>
+          </div>
+
+          <.error :if={@check_errors}>
+            Что-то пошло не так! Проверьте ошибки ниже.
+          </.error>
+
+          <.form
+            for={@form}
+            id="registration_form"
+            phx-submit="save"
+            phx-change="validate"
+            phx-trigger-action={@trigger_submit}
+            action={~p"/users/log_in?_action=registered"}
+            method="post"
+            class="space-y-4"
+          >
+            <div>
+              <label class="font-body block text-sm text-foreground/70 mb-1.5">Электронная почта</label>
+              <.input
+                field={@form[:email]}
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="font-body block text-sm text-foreground/70 mb-1.5">Пароль</label>
+              <.input
+                field={@form[:password]}
+                type="password"
+                placeholder="Минимум 12 символов"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              phx-disable-with="Создаём аккаунт..."
+              class="w-full py-2.5 bg-primary text-background font-headline tracking-wide hover:bg-primary/90 transition-colors mt-2"
+            >
+              Создать аккаунт
+            </button>
+          </.form>
         </div>
       </div>
     </div>
@@ -124,12 +126,10 @@ defmodule GodvilleSkWeb.UserRegistrationLive do
 
   def mount(_params, _session, socket) do
     changeset = Accounts.change_user_registration(%User{})
-
     socket =
       socket
       |> assign(trigger_submit: false, check_errors: false)
       |> assign_form(changeset)
-
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
@@ -141,7 +141,6 @@ defmodule GodvilleSkWeb.UserRegistrationLive do
             user,
             &url(~p"/users/confirm/#{&1}")
           )
-
         changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
@@ -157,7 +156,6 @@ defmodule GodvilleSkWeb.UserRegistrationLive do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
-
     if changeset.valid? do
       assign(socket, form: form, check_errors: false)
     else
