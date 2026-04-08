@@ -9,9 +9,10 @@ config :bcrypt_elixir, :log_rounds, 1
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :godville_sk, GodvilleSk.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
+  username: "godville_sk",
+  password: "Mo90p4mo!!!",
+  hostname: "62.122.99.214",
+  port: 54321,
   database: "godville_sk_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2

@@ -1,5 +1,95 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* This file is for your main application CSS */
+@layer base {
+  :root {
+    --background: 43 6% 18%;
+    --foreground: 0 0% 98%;
+    --card: 43 6% 22%;
+    --card-foreground: 0 0% 98%;
+    --popover: 43 6% 18%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 47 31% 60%;
+    --primary-foreground: 47 31% 10%;
+    --secondary: 43 6% 25%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 43 6% 25%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 5 71% 35%;
+    --accent-foreground: 5 71% 95%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 43 6% 25%;
+    --input: 43 6% 25%;
+    --ring: 47 31% 60%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Sidebar variables */
+    --sidebar-background: 43 6% 22%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-border: 43 6% 25%;
+    --sidebar-ring: 47 31% 60%;
+    --sidebar-primary: 47 31% 60%;
+    --sidebar-primary-foreground: 47 31% 10%;
+    --sidebar-accent: 43 6% 25%;
+    --sidebar-accent-foreground: 0 0% 98%;
+  }
+
+  .dark {
+    --background: 43 6% 18%;
+    --foreground: 0 0% 98%;
+    --card: 43 6% 22%;
+    --card-foreground: 0 0% 98%;
+    --popover: 43 6% 18%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 47 31% 60%;
+    --primary-foreground: 47 31% 10%;
+    --secondary: 43 6% 25%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 43 6% 25%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 5 71% 35%;
+    --accent-foreground: 5 71% 95%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 43 6% 25%;
+    --input: 43 6% 25%;
+    --ring: 47 31% 60%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Sidebar variables */
+    --sidebar-background: 43 6% 22%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-border: 43 6% 25%;
+    --sidebar-ring: 47 31% 60%;
+    --sidebar-primary: 47 31% 60%;
+    --sidebar-primary-foreground: 47 31% 10%;
+    --sidebar-accent: 43 6% 25%;
+    --sidebar-accent-foreground: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  :is(button,[href],input,select,textarea):focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  h1 { @apply text-3xl md:text-4xl font-headline; }
+  h2 { @apply text-2xl md:text-3xl font-headline; }
+  h3 { @apply text-xl md:text-2xl font-headline; }
+}

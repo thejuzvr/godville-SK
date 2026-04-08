@@ -308,6 +308,7 @@ defmodule GodvilleSk.Hero do
 
   defp initialize_new_hero(opts) do
     %__MODULE__{
+      id: opts[:id],
       name: opts[:name],
       race: opts[:race] || "Nord",
       class: opts[:class] || "Adventurer",
@@ -319,24 +320,26 @@ defmodule GodvilleSk.Hero do
   defp save_to_db(state) do
     if state.id do
       hero = Repo.get(HeroSchema, state.id)
-      attrs = %{
-        "strength" => state.strength,
-        "intelligence" => state.intelligence,
-        "willpower" => state.willpower,
-        "agility" => state.agility,
-        "speed" => state.speed,
-        "endurance" => state.endurance,
-        "personality" => state.personality,
-        "luck" => state.luck
-      }
-      
-      Game.update_hero(hero, %{
-        gold: state.gold,
-        hp: state.hp,
-        level: state.level,
-        exp: state.exp,
-        attributes: attrs
-      })
+      if hero do
+        attrs = %{
+          "strength" => state.strength,
+          "intelligence" => state.intelligence,
+          "willpower" => state.willpower,
+          "agility" => state.agility,
+          "speed" => state.speed,
+          "endurance" => state.endurance,
+          "personality" => state.personality,
+          "luck" => state.luck
+        }
+
+        Game.update_hero(hero, %{
+          gold: state.gold,
+          hp: state.hp,
+          level: state.level,
+          exp: state.exp,
+          attributes: attrs
+        })
+      end
     end
   end
 
@@ -360,6 +363,22 @@ defmodule GodvilleSk.Hero do
   end
 
   defp add_to_log(state, msg) do
+    if state.id do
+      GodvilleSk.Game.create_hero_log(%{hero_id: state.id, message: msg})
+
+      # Keep up to 100 logs per hero to limit DB growth
+      logs_count = GodvilleSk.Repo.aggregate(GodvilleSk.Game.HeroLog, :count, :id)
+      if logs_count > 100 do
+        import Ecto.Query
+
+        GodvilleSk.Game.HeroLog
+        |> where([l], l.hero_id == ^state.id)
+        |> order_by([l], asc: l.inserted_at)
+        |> limit(1)
+        |> GodvilleSk.Repo.delete_all()
+      end
+    end
+
     new_log = [msg | state.log] |> Enum.take(@max_log_size)
     Map.put(state, :log, new_log)
   end

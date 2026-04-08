@@ -1,104 +1,42 @@
 defmodule GodvilleSk.Game do
-  @moduledoc """
-  The Game context.
-  """
-
   import Ecto.Query, warn: false
   alias GodvilleSk.Repo
-
   alias GodvilleSk.Game.Hero
+  alias GodvilleSk.Game.HeroLog
 
-  @doc """
-  Returns the list of heroes.
-
-  ## Examples
-
-      iex> list_heroes()
-      [%Hero{}, ...]
-
-  """
-  def list_heroes do
-    Repo.all(Hero)
-  end
-
-  @doc """
-  Gets a single hero.
-
-  Raises `Ecto.NoResultsError` if the Hero does not exist.
-
-  ## Examples
-
-      iex> get_hero!(123)
-      %Hero{}
-
-      iex> get_hero!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_hero!(id), do: Repo.get!(Hero, id)
 
-  @doc """
-  Creates a hero.
+  def get_hero_by_user_id(user_id) do
+    Repo.get_by(Hero, user_id: user_id)
+  end
 
-  ## Examples
-
-      iex> create_hero(%{field: value})
-      {:ok, %Hero{}}
-
-      iex> create_hero(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_hero(attrs \\ %{}) do
     %Hero{}
     |> Hero.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a hero.
-
-  ## Examples
-
-      iex> update_hero(hero, %{field: new_value})
-      {:ok, %Hero{}}
-
-      iex> update_hero(hero, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_hero(%Hero{} = hero, attrs) do
     hero
     |> Hero.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a hero.
-
-  ## Examples
-
-      iex> delete_hero(hero)
-      {:ok, %Hero{}}
-
-      iex> delete_hero(hero)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_hero(%Hero{} = hero) do
     Repo.delete(hero)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking hero changes.
+  def list_hero_logs(hero_id, limit \\ 100) do
+    HeroLog
+    |> where(hero_id: ^hero_id)
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+  end
 
-  ## Examples
-
-      iex> change_hero(hero)
-      %Ecto.Changeset{data: %Hero{}}
-
-  """
-  def change_hero(%Hero{} = hero, attrs \\ %{}) do
-    Hero.changeset(hero, attrs)
+  def create_hero_log(attrs \\ %{}) do
+    %HeroLog{}
+    |> HeroLog.changeset(attrs)
+    |> Repo.insert()
   end
 end

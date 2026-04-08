@@ -2,10 +2,11 @@ import Config
 
 # Configure your database
 config :godville_sk, GodvilleSk.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "godville_sk_dev",
+  username: "godville_sk",
+  password: "Mo90p4mo!!!",
+  hostname: "62.122.99.214",
+  port: 54321,
+  database: "godville_sk",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
