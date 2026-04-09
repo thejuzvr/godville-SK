@@ -12,6 +12,7 @@ defmodule GodvilleSk.Hero do
   alias GodvilleSk.Game
   alias GodvilleSk.Game.Hero, as: HeroSchema
   alias GodvilleSk.Game.HeroLog
+  alias GodvilleSk.Game.LogMetadata
   alias GodvilleSk.Repo
   alias GodvilleSk.WorldClock
   require Logger
@@ -328,7 +329,9 @@ defmodule GodvilleSk.Hero do
         |> Map.put(:hp, state.max_hp) # Full heal upon resurrection
         |> Map.put(:intervention_power, 0)
         |> Map.put(:location, GameData.get_location())
-        |> add_to_log("[БОЖЕСТВЕННОЕ ВМЕШАТЕЛЬСТВО] Небеса раскрылись, и властный голос вернул мою душу в мир живых! Я воскрес!")
+        |> add_to_log("[БОЖЕСТВЕННОЕ ВМЕШАТЕЛЬСТВО] Небеса раскрылись, и властный голос вернул мою душу в мир живых! Я воскрес!", %{
+          type: "resurrection"
+        })
 
       broadcast_update(state)
       {:noreply, state}
@@ -452,10 +455,16 @@ defmodule GodvilleSk.Hero do
       state = case Enum.random([:task, :thought, :heal]) do
         :task ->
           task = Enum.random(GameData.sovngarde_tasks())
-          add_to_log(state, "Совнгард: [Задание] #{task.title}. #{task.description}")
+          add_to_log(state, "Совнгард: [Задание] #{task.title}. #{task.description}", %{
+            type: "sovngarde_task",
+            task_id: task.id,
+            title: task.title
+          })
         :thought ->
           thought = Enum.random(GameData.sovngarde_thoughts())
-          add_to_log(state, "Совнгард: [Мысль] #{thought}")
+          add_to_log(state, "Совнгард: [Мысль] #{thought}", %{
+            type: "sovngarde_thought"
+          })
         :heal ->
           state
       end
@@ -688,7 +697,10 @@ defmodule GodvilleSk.Hero do
         |> Map.put(:luck_modifier, -2)
         |> Map.put(:respawn_at, respawn_at)
         |> Map.put(:statistics, update_in(state.statistics, [:total_deaths], fn val -> (val || 0) + 1 end))
-        |> add_to_log("Дух покидает тело... Отправление в Совнгард на #{duration_mins} мин. (-100 золота, эффект: Ослабленность -2)")
+        |> add_to_log("Дух покидает тело... Отправление в Совнгард на #{duration_mins} мин. (-100 золота, эффект: Ослабленность -2)", %{
+          type: "death",
+          duration_minutes: duration_mins
+        })
       else
         state
         |> Map.put(:hp, new_hero_hp)
@@ -842,6 +854,14 @@ defmodule GodvilleSk.Hero do
       |> limit(@max_log_size)
       |> Repo.all()
       |> Enum.map(&log_entry_from_schema/1)
+      |> Enum.map(fn entry ->
+        metadata = entry.metadata || %{}
+        if is_nil(metadata[:context]) do
+          %{entry | metadata: Map.put(metadata, :context, :normal)}
+        else
+          entry
+        end
+      end)
     
     %__MODULE__{
       id: hero.id,
@@ -963,19 +983,28 @@ defmodule GodvilleSk.Hero do
   end
 
   defp add_to_log(state, msg, metadata \\ %{}) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    entry = %{
-      id: nil,
-      message: msg,
-      metadata: metadata,
-      inserted_at: now,
-      game_time: WorldClock.game_time_at(now)
-    }
+    context = if state.status == :sovngarde, do: :sovngarde, else: :normal
 
-    _ = persist_log(state, entry)
+    case LogMetadata.validate(metadata, context) do
+      {:ok, normalized_metadata} ->
+        now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+        entry = %{
+          id: nil,
+          message: msg,
+          metadata: normalized_metadata,
+          inserted_at: now,
+          game_time: WorldClock.game_time_at(now)
+        }
 
-    new_log = [entry | state.log] |> Enum.take(@max_log_size)
-    Map.put(state, :log, new_log)
+        _ = persist_log(state, entry)
+
+        new_log = [entry | state.log] |> Enum.take(@max_log_size)
+        Map.put(state, :log, new_log)
+
+      {:error, reason} ->
+        Logger.error("[Hero] Invalid metadata for log entry: #{inspect(reason)}. Message: #{msg}")
+        state
+    end
   end
 
   defp persist_log(%{id: nil}, _entry), do: :ok

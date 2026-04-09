@@ -215,7 +215,7 @@ defmodule GodvilleSkWeb.DashboardLive do
 
           <!-- Log entries -->
           <div class="flex-1 overflow-y-auto p-4 space-y-1.5 font-body text-sm">
-            <%= for entry <- @hero_state.log do %>
+            <%= for entry <- normal_logs(assigns) do %>
               <div class="flex gap-2 text-foreground/80 leading-relaxed">
                 <span class="text-primary/60 font-headline text-xs flex-shrink-0 mt-0.5 w-12">
                   <%= format_game_time(entry.game_time || @game_time) %>
@@ -684,19 +684,19 @@ defmodule GodvilleSkWeb.DashboardLive do
               </div>
            </div>
            
-           <div class="flex-1 overflow-y-auto p-8 space-y-6">
-              <%= for entry <- @hero_state.log do %>
-                <div class="flex gap-6 group">
-                   <div class="flex-shrink-0 w-1 pt-1">
-                      <div class="h-full w-full bg-gradient-to-b from-blue-400/50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                   </div>
-                   <div class="space-y-1">
-                      <div class="text-xs text-blue-300/40 font-headline"><%= format_game_time(entry.game_time || @game_time) %></div>
-                      <div class="text-lg font-light leading-relaxed text-blue-50/80 group-hover:text-white transition-colors"><%= entry.message %></div>
-                   </div>
-                </div>
-              <% end %>
-           </div>
+<div class="flex-1 overflow-y-auto p-8 space-y-6">
+               <%= for entry <- sovngarde_logs(assigns) do %>
+                 <div class="flex gap-6 group">
+                    <div class="flex-shrink-0 w-1 pt-1">
+                       <div class="h-full w-full bg-gradient-to-b from-blue-400/50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <div class="space-y-1">
+                       <div class="text-xs text-blue-300/40 font-headline"><%= format_game_time(entry.game_time || @game_time) %></div>
+                       <div class="text-lg font-light leading-relaxed text-blue-50/80 group-hover:text-white transition-colors"><%= entry.message %></div>
+                    </div>
+                 </div>
+               <% end %>
+            </div>
 
            <!-- Bottom Decor -->
            <div class="p-4 bg-white/5 border-t border-white/5 flex justify-center gap-12 text-[10px] uppercase tracking-[0.3em] opacity-30">
@@ -710,5 +710,19 @@ defmodule GodvilleSkWeb.DashboardLive do
       </main>
     </div>
     """
+  end
+
+  defp filter_logs_by_context(logs, context) do
+    Enum.filter(logs, fn entry ->
+      (entry.metadata || %{})[:context] == context
+    end)
+  end
+
+  defp normal_logs(assigns) do
+    filter_logs_by_context(@hero_state.log, :normal)
+  end
+
+  defp sovngarde_logs(assigns) do
+    filter_logs_by_context(@hero_state.log, :sovngarde)
   end
 end
