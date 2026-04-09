@@ -109,6 +109,22 @@ defmodule GodvilleSk.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user dice theme.
+  """
+  def change_user_dice_theme(user, attrs \\ %{}) do
+    User.dice_theme_changeset(user, attrs)
+  end
+
+  @doc """
+  Updates the user's dice theme.
+  """
+  def update_user_dice_theme(user, attrs) do
+    user
+    |> User.dice_theme_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Emulates that the email will change without actually changing
   it in the database.
 

@@ -22,10 +22,87 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {}
+
+Hooks.LocalClock = {
+  mounted() {
+    this.tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    this.render()
+    this.timer = setInterval(() => this.render(), 1000)
+  },
+  updated() {
+    this.render()
+  },
+  destroyed() {
+    if (this.timer) clearInterval(this.timer)
+  },
+  render() {
+    const iso = this.el.dataset.utc
+    if (!iso) return
+    const dt = new Date(iso)
+    if (Number.isNaN(dt.getTime())) return
+
+    const dateFmt = new Intl.DateTimeFormat("ru-RU", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: this.tz
+    })
+
+    const timeFmt = new Intl.DateTimeFormat("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZone: this.tz
+    })
+
+      const dateEl = this.el.querySelector("[data-role='date']")
+    const timeEl = this.el.querySelector("[data-role='time']")
+    if (dateEl) dateEl.textContent = dateFmt.format(dt)
+    if (timeEl) timeEl.textContent = timeFmt.format(dt)
+  }
+}
+
+Hooks.SovngardeTimer = {
+  mounted() {
+    this.update()
+    this.interval = setInterval(() => this.update(), 1000)
+  },
+  updated() {
+    this.update()
+  },
+  destroyed() {
+    if (this.interval) clearInterval(this.interval)
+  },
+  update() {
+    const respawnAt = this.el.dataset.respawnAt
+    if (!respawnAt) return
+
+    const target = new Date(respawnAt)
+    const now = new Date()
+    const diff = target - now
+
+    if (diff <= 0) {
+      this.el.textContent = "ГОТОВ К ВОЗВРАЩЕНИЮ"
+      this.el.classList.add("text-primary", "animate-pulse")
+      return
+    }
+
+    const mins = Math.floor(diff / 60000)
+    const secs = Math.floor((diff % 60000) / 1000)
+    this.el.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
+  }
+}
+
+import {DiceRollerHook} from "../vendor/d20"
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken},
+  hooks: Object.assign(Hooks, {DiceRollerHook})
 })
 
 // Show progress bar on live navigation and form submits

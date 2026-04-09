@@ -8,14 +8,10 @@ defmodule GodvilleSkWeb.UserRegistrationLive do
     ~H"""
     <div class="flex h-screen bg-[#0e0c07] overflow-hidden">
       <!-- Left atmospheric panel -->
-      <div class="hidden lg:flex lg:w-[58%] relative flex-col overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0a0804] via-[#16120a] to-[#0a0804]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,rgba(180,148,70,0.10)_0%,transparent_70%)]"></div>
-        <div class="absolute top-0 inset-x-0 h-64 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(180,148,70,0.06)_0%,transparent_100%)]"></div>
-        <div class="absolute inset-0 opacity-[0.03]"
-             style="background-image: repeating-linear-gradient(0deg, #c4a046 0px, transparent 1px, transparent 60px),
-                                      repeating-linear-gradient(90deg, #c4a046 0px, transparent 1px, transparent 60px)">
-        </div>
+      <div class="hidden lg:flex lg:w-[58%] relative flex-col overflow-hidden bg-[url('/images/elder_scrolls_login_bg.png')] bg-cover bg-center">
+        <!-- Deep background -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-[#0e0c07]/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0e0c07] via-transparent to-black/50"></div>
         <div class="relative z-10 p-8 flex items-center gap-2.5">
           <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M12 2L2 7v5c0 5.25 4.25 10.15 10 11.25C17.75 22.15 22 17.25 22 12V7L12 2z" />

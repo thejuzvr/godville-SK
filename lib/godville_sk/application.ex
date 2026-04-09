@@ -10,7 +10,9 @@ defmodule GodvilleSk.Application do
       GodvilleSk.Repo,
       {DNSCluster, query: Application.get_env(:godville_sk, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GodvilleSk.PubSub},
+      GodvilleSk.WorldClock,
       {DynamicSupervisor, name: GodvilleSk.HeroSupervisor, strategy: :one_for_one},
+      GodvilleSk.Game.Initializer,
       GodvilleSkWeb.Endpoint
     ]
 
