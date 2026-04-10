@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-godville_sk_prod}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - DATABASE_URL=ecto://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-godville_sk_prod}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - PHX_HOST=${PHX_HOST:-localhost}
+      - PORT=4000
+      - PHX_SERVER=true
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  postgres_data:

@@ -4,14 +4,10 @@ defmodule GodvilleSk.Game.LogMetadata do
   Обеспечивает строгую валидацию типов событий и контекстов.
   """
 
-  @doc """
-  Допустимые контексты событий.
-  """
+  # Допустимые контексты событий.
   @contexts [:normal, :sovngarde]
 
-  @doc """
-  Допустимые типы событий.
-  """
+  # Допустимые типы событий.
   @event_types [
     "initiative_roll",
     "combat_roll",
@@ -22,10 +18,8 @@ defmodule GodvilleSk.Game.LogMetadata do
     "resurrection"
   ]
 
-  @doc """
-  Схемы валидации для каждого типа события.
-  Ключ - тип события, значение - список обязательных полей.
-  """
+  # Схемы валидации для каждого типа события.
+  # Ключ - тип события, значение - список обязательных полей.
   @schemas %{
     "initiative_roll" => [:hero_roll, :enemy_roll, :turn],
     "combat_roll" => [:actor, :target, :roll, :total, :damage, :is_hit],
@@ -36,10 +30,8 @@ defmodule GodvilleSk.Game.LogMetadata do
     "resurrection" => []
   }
 
-  @doc """
-  Валидирует metadata и возвращает нормализованный результат.
-  """
-  def validate(metadata, context \\ :normal) when is_map(metadata) do
+  def validate(metadata, context \\ :normal)
+  def validate(metadata, context) when is_map(metadata) do
     with {:ok, _} <- validate_context(context),
          {:ok, _} <- validate_event_type(metadata),
          {:ok, _} <- validate_schema(metadata) do

@@ -324,14 +324,14 @@ defmodule GodvilleSk.Hero do
     if state.status == :sovngarde and state.intervention_power >= 100 do
       state =
         state
+        |> add_to_log("[БОЖЕСТВЕННОЕ ВМЕШАТЕЛЬСТВО] Небеса раскрылись, и властный голос вернул мою душу в мир живых! Я воскрес!", %{
+          type: "resurrection"
+        })
         |> Map.put(:status, :idle)
         |> Map.put(:respawn_at, nil)
         |> Map.put(:hp, state.max_hp) # Full heal upon resurrection
         |> Map.put(:intervention_power, 0)
         |> Map.put(:location, GameData.get_location())
-        |> add_to_log("[БОЖЕСТВЕННОЕ ВМЕШАТЕЛЬСТВО] Небеса раскрылись, и властный голос вернул мою душу в мир живых! Я воскрес!", %{
-          type: "resurrection"
-        })
 
       broadcast_update(state)
       {:noreply, state}
@@ -689,6 +689,10 @@ defmodule GodvilleSk.Hero do
         respawn_at = DateTime.add(DateTime.utc_now(), duration_mins, :minute)
 
         state
+        |> add_to_log("Дух покидает тело... Отправление в Совнгард на #{duration_mins} мин. (-100 золота, эффект: Ослабленность -2)", %{
+          type: "death",
+          duration_minutes: duration_mins
+        })
         |> Map.put(:hp, 0)
         |> Map.put(:status, :sovngarde)
         |> Map.put(:location, "Совнгард")
@@ -697,10 +701,6 @@ defmodule GodvilleSk.Hero do
         |> Map.put(:luck_modifier, -2)
         |> Map.put(:respawn_at, respawn_at)
         |> Map.put(:statistics, update_in(state.statistics, [:total_deaths], fn val -> (val || 0) + 1 end))
-        |> add_to_log("Дух покидает тело... Отправление в Совнгард на #{duration_mins} мин. (-100 золота, эффект: Ослабленность -2)", %{
-          type: "death",
-          duration_minutes: duration_mins
-        })
       else
         state
         |> Map.put(:hp, new_hero_hp)

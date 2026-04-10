@@ -684,7 +684,7 @@ defmodule GodvilleSkWeb.DashboardLive do
               </div>
            </div>
            
-<div class="flex-1 overflow-y-auto p-8 space-y-6">
+               <div class="flex-1 overflow-y-auto p-8 space-y-6">
                <%= for entry <- sovngarde_logs(assigns) do %>
                  <div class="flex gap-6 group">
                     <div class="flex-shrink-0 w-1 pt-1">
@@ -719,10 +719,10 @@ defmodule GodvilleSkWeb.DashboardLive do
   end
 
   defp normal_logs(assigns) do
-    filter_logs_by_context(@hero_state.log, :normal)
+    filter_logs_by_context(assigns.hero_state.log, :normal)
   end
 
   defp sovngarde_logs(assigns) do
-    filter_logs_by_context(@hero_state.log, :sovngarde)
+    filter_logs_by_context(assigns.hero_state.log, :sovngarde)
   end
 end

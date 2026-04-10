@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+cd -P -- "$(dirname -- "$0")"
+
+./godville_sk eval "GodvilleSk.Release.migrate"
+PHX_SERVER=true exec ./godville_sk start
