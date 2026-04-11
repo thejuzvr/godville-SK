@@ -43,13 +43,13 @@ defmodule GodvilleSk.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
-      # {:heroicons,
-      #  github: "tailwindlabs/heroicons",
-      #  tag: "v2.1.1",
-      #  sparse: "optimized",
-      #  app: false,
-      #  compile: false,
-      #  depth: 1}
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1}
     ]
   end
 
