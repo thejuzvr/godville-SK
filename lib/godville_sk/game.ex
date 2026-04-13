@@ -61,7 +61,12 @@ defmodule GodvilleSk.Game do
   def get_hero_live_state(%Hero{} = hero) do
     case :global.whereis_name({:hero, hero.name}) do
       :undefined -> nil
-      _pid -> GodvilleSk.Hero.get_state(hero.name)
+      _pid ->
+        try do
+          GodvilleSk.Hero.get_state(hero.name, 2000)
+        catch
+          :exit, _reason -> nil
+        end
     end
   end
 end

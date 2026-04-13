@@ -73,6 +73,11 @@ defmodule GodvilleSkWeb.Router do
 
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/equipment", EquipmentLive, :index
+      live "/analytics", AnalyticsLive, :index
+      live "/temple", TempleLive, :index
+      live "/admin", AdminLive, :index
     end
   end
 

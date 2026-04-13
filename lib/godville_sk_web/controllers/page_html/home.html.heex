@@ -1,74 +1,74 @@
 <.flash_group flash={@flash} />
-<div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-  <div class="max-w-4xl w-full">
-    <!-- Decorative top border -->
-    <div class="flex items-center justify-center mb-8">
-      <div class="h-px bg-border/30 flex-1"></div>
-      <svg class="w-8 h-8 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-      </svg>
-      <div class="h-px bg-border/30 flex-1"></div>
+
+<div class="relative min-h-[calc(100vh-60px)] flex flex-col justify-center items-center overflow-hidden bg-black text-foreground">
+  <!-- Atmospheric Background Image with Parallax & Dark Overlay -->
+  <div class="absolute inset-0 z-0 h-[120%] w-[120%] -top-[10%] -left-[10%] opacity-50 bg-[url('/images/elder_scrolls_login_bg.png')] bg-cover bg-center bg-no-repeat grayscale-[30%] animate-pulse duration-[10000ms]"></div>
+  <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+  <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-transparent to-transparent"></div>
+
+  <!-- Ambient Dust Particles -->
+  <div class="absolute inset-0 z-20 pointer-events-none" style="background-image: radial-gradient(circle, #eab30810 1px, transparent 1px); background-size: 50px 50px; opacity: 0.3; animation: drift 30s linear infinite;"></div>
+
+  <!-- Content Container -->
+  <div class="relative z-30 max-w-5xl w-full px-6 py-16 md:px-12 flex flex-col items-center">
+    
+    <!-- Top Emblema -->
+    <div class="flex items-center justify-center mb-8 opacity-0 animate-[fade-in_1s_ease-out_0.5s_forwards]">
+      <div class="h-px bg-gradient-to-r from-transparent to-primary/60 w-24"></div>
+      <div class="mx-6 w-16 h-16 rounded-full border border-primary/40 flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+        <svg class="w-8 h-8 text-primary shadow-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+        </svg>
+      </div>
+      <div class="h-px bg-gradient-to-l from-transparent to-primary/60 w-24"></div>
     </div>
 
-    <!-- Main content card -->
-    <div class="bg-card border border-border/50 shadow-2xl p-8 md:p-12 relative overflow-hidden">
-      <!-- Decorative corner elements -->
-      <div class="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-primary/20"></div>
-      <div class="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-primary/20"></div>
-      <div class="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-primary/20"></div>
-      <div class="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-primary/20"></div>
-
-      <div class="relative z-10">
-        <!-- Title -->
-        <h1 class="font-headline text-4xl md:text-6xl lg:text-7xl text-center text-primary mb-4 tracking-wider leading-tight text-balance">
-          THE ELDER SCROLLS
-        </h1>
-        <div class="flex items-center justify-center mb-12">
-          <div class="h-px bg-primary/40 w-16"></div>
-          <h2 class="font-headline text-2xl md:text-3xl text-center text-foreground/90 mx-4 tracking-wide">
-            Zero-Player
-          </h2>
-          <div class="h-px bg-primary/40 w-16"></div>
-        </div>
-
-        <!-- Description -->
-        <p class="font-body text-lg md:text-xl text-center text-foreground/80 mb-12 max-w-2xl mx-auto leading-relaxed text-pretty">
-          Begin your automated journey through the ancient lands of Tamriel.
-          Watch as your hero forges their own destiny, battling dragons, exploring forgotten ruins,
-          and uncovering the secrets of the Divines—all without lifting a finger.
-          The adventure unfolds itself in this groundbreaking zero-player experience.
-        </p>
-
-        <!-- Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <.link navigate={~p"/users/log_in"} class="font-headline w-full sm:w-auto px-8 py-4 bg-primary/10 hover:bg-primary/20 text-primary border-2 border-primary/50 hover:border-primary transition-all duration-300 text-lg tracking-wide shadow-lg hover:shadow-primary/20 text-center block">
-            Войти
-          </.link>
-          <.link navigate={~p"/users/register"} class="font-headline w-full sm:w-auto px-8 py-4 bg-primary text-background hover:bg-primary/90 border-2 border-primary hover:border-primary/80 transition-all duration-300 text-lg tracking-wide shadow-lg hover:shadow-xl hover:shadow-primary/30 text-center block">
-            Стать Принцем Даэдра
-          </.link>
-        </div>
-
-        <!-- Bottom decorative element -->
-        <div class="flex items-center justify-center mt-12">
-          <div class="h-px bg-border/30 w-24"></div>
-          <svg class="w-6 h-6 mx-3 text-primary/40" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          <div class="h-px bg-border/30 w-24"></div>
-        </div>
+    <!-- Title Group -->
+    <div class="text-center space-y-4 opacity-0 animate-[fade-in_1.5s_ease-out_1s_forwards]">
+      <h1 class="font-headline text-5xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-primary via-[#e5c15e] to-[#7f6318] drop-shadow-lg uppercase tracking-[0.2em] leading-tight filter drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
+        The Elder Scrolls
+      </h1>
+      
+      <div class="flex items-center justify-center gap-4">
+        <div class="h-[1px] bg-primary/30 w-32"></div>
+        <h2 class="font-headline text-2xl md:text-3xl text-foreground/80 tracking-[0.4em] uppercase font-light">
+          Zero-Player
+        </h2>
+        <div class="h-[1px] bg-primary/30 w-32"></div>
       </div>
     </div>
 
-    <!-- Decorative bottom border -->
-    <div class="flex items-center justify-center mt-8">
-      <div class="h-px bg-border/30 flex-1"></div>
-      <svg class="w-6 h-6 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-        <path d="M2 17L12 22L22 17" />
-        <path d="M2 12L12 17L22 12" />
-      </svg>
-      <div class="h-px bg-border/30 flex-1"></div>
+    <!-- Description text -->
+    <div class="max-w-3xl mt-12 mb-16 text-center opacity-0 animate-[fade-in_2s_ease-out_1.5s_forwards]">
+      <p class="font-body text-lg md:text-xl text-foreground/60 leading-loose mx-auto">
+        Окунись в автоматизированное приключение на землях Тамриэля.<br/> 
+        Следи за тем, как герой кует свою судьбу: оттачивает навыки, 
+        исследует древние руины и постигает мудрость Девяти.<br/> 
+        Всё это в жанре <span class="italic text-primary/80">Zero-Player</span>.
+      </p>
     </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-8 w-full sm:w-auto opacity-0 animate-[fade-in_2s_ease-out_2s_forwards]">
+      <.link navigate={~p"/users/log_in"} class="group relative px-10 py-5 bg-card/40 hover:bg-black/80 border border-primary/30 overflow-hidden transition-all duration-500 backdrop-blur-sm sm:w-64 text-center">
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        <div class="relative z-10 flex items-center justify-center gap-3">
+          <svg class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+          </svg>
+          <span class="font-headline text-xl text-primary tracking-widest uppercase">Войти</span>
+        </div>
+      </.link>
+
+      <.link navigate={~p"/users/register"} class="group relative px-10 py-5 bg-gradient-to-b from-primary to-[#7f6318] hover:from-[#e5c15e] hover:to-[#5c4710] border border-primary/50 shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transition-all duration-500 sm:w-64 text-center">
+        <div class="relative z-10 flex items-center justify-center gap-3">
+          <svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <span class="font-headline text-xl text-black tracking-widest font-bold uppercase">Вступить</span>
+        </div>
+      </.link>
+    </div>
+
   </div>
 </div>

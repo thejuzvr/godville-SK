@@ -2,10 +2,13 @@ import Config
 
 # Configure your database
 config :godville_sk, GodvilleSk.Repo,
-  url: System.get_env("DATABASE_URL"),
+  username: "godville_sk",
+  password: "Mo90p4mo!!!",
+  hostname: "192.168.61.86",
+  database: "godville_sk",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 20
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -16,7 +19,7 @@ config :godville_sk, GodvilleSk.Repo,
 config :godville_sk, GodvilleSkWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {0, 0, 0, 0}, port: 5000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,

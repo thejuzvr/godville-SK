@@ -8,8 +8,18 @@ defmodule GodvilleSk.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
-
+    field :dice_theme, :string, default: "default"
+    
     timestamps(type: :utc_datetime)
+  end
+
+  @doc """
+  A user changeset for changing dice theme settings.
+  """
+  def dice_theme_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:dice_theme])
+    |> validate_inclusion(:dice_theme, ["default", "crimson", "obsidian", "paper"], message: "Invalid dice theme")
   end
 
   @doc """
@@ -53,7 +63,7 @@ defmodule GodvilleSk.Accounts.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 5, max: 72)
     # Examples of additional password validation:
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")

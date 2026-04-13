@@ -35,3 +35,6 @@ godville_sk-*.tar
 npm-debug.log
 /assets/node_modules/
 
+/.mix/
+.elixir_ls/
+44pzzC.zip

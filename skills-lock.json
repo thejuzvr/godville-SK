@@ -1,10 +1,40 @@
 {
   "version": 1,
   "skills": {
+    "agent-memory-systems": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "528d3840171865348f03e39124f008271e4d0da866ae53c88b53bf912ca9feb4"
+    },
+    "agents-md": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "bd0ff87dae9a45a65acec5ed40976e499e72399e5b82e2c715b19b8262d18242"
+    },
+    "backend-architect": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "68232e5e3585b870282a71c8e6f46833c0ec95a1dc337d0c969bf5fa7e635224"
+    },
+    "docker-expert": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "51defa57449d1e7a3e51ae6444c111c4424cd47ed1fb96a3eb1dba0c17971c0d"
+    },
     "elixir-pro": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
       "computedHash": "0c67e6d5c877c5e89e4d073014cad4925e842dfd0e4fb4e2e7d89fde9763c43c"
+    },
+    "frontend-design": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "175bb7ce2b0b1883c9ea072066a3bf6e11454c27cd8a273b6e44bd967101b922"
+    },
+    "frontend-developer": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "abc3d2f3679530e0b497855cbd7dc4f298f9a726814b546fb9d00743cea16c11"
     },
     "i18n-localization": {
       "source": "sickn33/antigravity-awesome-skills",
