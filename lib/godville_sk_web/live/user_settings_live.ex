@@ -6,56 +6,57 @@ defmodule GodvilleSkWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col h-screen overflow-hidden bg-background">
-      <!-- Top Nav -->
-      <.game_nav active_tab={:profile} />
+    <div class="flex flex-col h-screen overflow-hidden bg-background relative font-body">
+      <!-- Arcane texture background -->
+      <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-[0.08] pointer-events-none"></div>
 
-      <div class="flex-1 overflow-y-auto p-4 md:p-8">
-        <div class="max-w-4xl mx-auto space-y-8">
+      <!-- Top Nav -->
+      <div class="relative z-10 border-b-2 border-border/80 bg-background/90 backdrop-blur-sm">
+        <.game_nav active_tab={:profile} />
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4 md:p-8 relative z-10 custom-scrollbar">
+        <div class="max-w-4xl mx-auto space-y-12">
           <!-- Page Header -->
-          <div class="relative pb-6 border-b border-border/40">
-            <h1 class="text-3xl font-headline text-primary tracking-widest uppercase">
+          <div class="relative pb-6 border-b border-border/40 text-center">
+            <h1 class="text-3xl font-headline text-primary tracking-[0.3em] uppercase drop-shadow-[0_0_10px_rgba(200,150,50,0.3)]">
               Настройки Профиля
             </h1>
-            <p class="text-foreground/50 font-body mt-1 italic">
+            <p class="text-foreground/40 font-headline uppercase tracking-widest text-[9px] mt-2">
               Имперский реестр: управление вашей сущностью и божественными атрибутами.
             </p>
-            <div class="absolute bottom-0 left-0 w-32 h-0.5 bg-primary/40"></div>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-primary/40"></div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- LEFT COLUMN: Theme & Social -->
             <div class="space-y-8">
               <!-- DICE THEME CARD -->
-              <div class="bg-card border border-border/50 p-6 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <svg class="w-24 h-24 text-primary" viewBox="0 0 24 24" fill="currentColor">
+              <div class="bg-background/80 border-[2px] border-double border-border/60 p-8 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-primary/50"></div>
+                <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-primary/50"></div>
+
+                <div class="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+                  <svg class="w-32 h-32 text-primary" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19,5V19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,10.5A1.5,1.5 0 1,1 10.5,12A1.5,1.5 0 0,1 12,10.5M7,7A1.5,1.5 0 1,1 5.5,8.5A1.5,1.5 0 0,1 7,7M17,17A1.5,1.5 0 1,1 15.5,18.5A1.5,1.5 0 0,1 17,17M17,7A1.5,1.5 0 1,1 15.5,8.5A1.5,1.5 0 0,1 17,7M7,17A1.5,1.5 0 1,1 5.5,18.5A1.5,1.5 0 0,1 7,17Z" />
                   </svg>
                 </div>
-                <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                  <svg
-                    class="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                  </svg>
+                
+                <h2 class="font-headline text-primary mb-8 px-2 flex items-center gap-3 uppercase tracking-widest border-b border-border/30 pb-3">
+                  <span class="w-1.5 h-1.5 bg-primary transform rotate-45"></span>
                   Оформление
                 </h2>
 
-                <.form for={@theme_form} phx-submit="update_theme" class="space-y-4">
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                <.form for={@theme_form} phx-submit="update_theme" class="space-y-6 relative z-10">
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
                       Тема костей D20
                     </label>
                     <select
                       name="user[dice_theme]"
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all cursor-pointer font-body"
+                      class="w-full bg-background border border-border/60 text-foreground/80 px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all cursor-pointer font-headline uppercase tracking-wider"
                     >
-                      <%= for {label, value} <- [{"Default (Dark Gold)", "default"}, {"Crimson (Dark Red)", "crimson"}, {"Obsidian (Black Gloss)", "obsidian"}, {"Sketch (Paper Teal)", "paper"}] do %>
+                      <%= for {label, value} <- [{"Эхо Золота (По умолчанию)", "default"}, {"Кровь Даэдра (Красный)", "crimson"}, {"Слезы Обливиона (Обсидиан)", "obsidian"}, {"Древний Свиток (Бюрюза)", "paper"}] do %>
                         <option value={value} selected={value == @theme_form[:dice_theme].value}>
                           <%= label %>
                         </option>
@@ -64,100 +65,93 @@ defmodule GodvilleSkWeb.UserSettingsLive do
                   </div>
                   <button
                     type="submit"
-                    class="w-full py-2 bg-primary/80 hover:bg-primary text-background font-headline text-xs tracking-widest transition-all shadow-lg active:translate-y-0.5"
+                    class="w-full py-3 bg-primary/10 border border-primary/50 hover:bg-primary/20 text-primary font-headline text-[10px] uppercase tracking-[0.2em] transition-all shadow-[inset_0_0_10px_rgba(200,150,50,0.1)] hover:shadow-[0_0_15px_rgba(200,150,50,0.2)]"
                   >
-                    СОХРАНИТЬ ТЕМУ
+                    Запечатлеть Тему
                   </button>
                 </.form>
               </div>
+
               <!-- ACCOUNT INFO PREVIEW -->
-              <div class="bg-card/30 border border-border/20 p-6 backdrop-blur-sm">
-                <h2 class="font-headline text-foreground/70 text-sm mb-4 uppercase tracking-widest">
-                  Текущий статус
+              <div class="bg-background/80 border border-border/50 p-6 backdrop-blur-sm relative">
+                <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/50"></div>
+                <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/50"></div>
+                
+                <h2 class="font-headline text-foreground/50 text-[10px] mb-4 uppercase tracking-[0.2em] border-b border-border/20 pb-2">
+                  Статус Души
                 </h2>
-                <div class="space-y-3">
-                  <div class="flex justify-between border-b border-border/10 pb-2">
-                    <span class="text-xs text-foreground/40 font-body">ID Пользователя</span>
-                    <span class="text-xs font-headline text-primary">#<%= @current_user.id %></span>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="p-3 bg-border/20 border border-border/30 text-center">
+                    <span class="text-[9px] text-foreground/40 font-headline uppercase tracking-widest block mb-1">Истинное Имя (ID)</span>
+                    <span class="text-sm font-headline text-primary tracking-widest">#<%= @current_user.id %></span>
                   </div>
-                  <div class="flex justify-between border-b border-border/10 pb-2">
-                    <span class="text-xs text-foreground/40 font-body">В реестре с</span>
-                    <span class="text-xs font-headline text-foreground/70">
+                  <div class="p-3 bg-border/20 border border-border/30 text-center">
+                    <span class="text-[9px] text-foreground/40 font-headline uppercase tracking-widest block mb-1">Запись Создана</span>
+                    <span class="text-sm font-headline text-foreground/70 tracking-widest">
                       <%= Calendar.strftime(@current_user.inserted_at, "%d.%m.%Y") %>
                     </span>
                   </div>
                 </div>
               </div>
             </div>
+
             <!-- RIGHT COLUMN: Security & Email -->
             <div class="space-y-8">
               <!-- EMAIL SETTINGS -->
-              <div class="bg-card border border-border/50 p-6 relative">
-                <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                  <svg
-                    class="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
+              <div class="bg-background/80 border border-border/50 p-8 relative">
+                <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary/30 via-transparent to-transparent"></div>
+                
+                <h2 class="font-headline text-primary mb-6 px-2 flex items-center gap-3 uppercase tracking-widest border-b border-border/30 pb-3">
+                  <span class="w-1.5 h-1.5 bg-primary transform rotate-45"></span>
                   Учетные данные
                 </h2>
 
                 <.form for={@email_form} phx-submit="update_email" class="space-y-6">
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
-                      Email Адрес
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
+                      Связующий Email (Почта)
                     </label>
                     <input
                       type="email"
                       name="user[email]"
                       value={@email_form[:email].value}
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                      class="w-full bg-background border border-border/60 text-foreground px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all font-body font-bold"
                     />
                     <%= if error = List.first(@email_form[:email].errors) do %>
-                      <span class="text-[10px] text-red-400 font-body italic">
-                        <%= translate_error(error) %>
-                      </span>
+                      <div class="text-[9px] text-red-500 font-headline uppercase tracking-widest bg-red-900/10 border border-red-900/30 p-2 mt-2">
+                        Ошибка: <%= translate_error(error) %>
+                      </div>
                     <% end %>
                   </div>
 
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
-                      Текущий пароль
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
+                      Ключ Подтверждения (Текущий Пароль)
                     </label>
                     <input
                       type="password"
                       name="current_password"
                       id="current_password_for_email"
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                      class="w-full bg-background border border-border/60 text-foreground px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all font-body tracking-[0.5em]"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20"
+                    class="w-full py-3 bg-background border border-border/50 hover:border-primary/50 hover:bg-primary/5 text-foreground/80 font-headline text-[10px] tracking-[0.2em] uppercase transition-all"
                   >
-                    ИЗМЕНИТЬ EMAIL
+                    Изменить Связь (Email)
                   </button>
                 </.form>
               </div>
+
               <!-- PASSWORD SETTINGS -->
-              <div class="bg-card border border-border/50 p-6">
-                <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                  <svg
-                    class="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
-                  </svg>
-                  Безопасность
+              <div class="bg-background/80 border border-border/50 p-8 relative">
+                <div class="absolute bottom-0 right-0 w-full h-[1px] bg-gradient-to-l from-primary/30 via-transparent to-transparent"></div>
+                
+                <h2 class="font-headline text-primary mb-6 px-2 flex items-center gap-3 uppercase tracking-widest border-b border-border/30 pb-3">
+                  <span class="w-1.5 h-1.5 bg-primary transform rotate-45"></span>
+                  Защита (Пароль)
                 </h2>
 
                 <.form
@@ -166,54 +160,54 @@ defmodule GodvilleSkWeb.UserSettingsLive do
                   method="post"
                   phx-submit="update_password"
                   phx-trigger-action={@trigger_submit}
-                  class="space-y-4"
+                  class="space-y-6"
                 >
                   <input name={@password_form[:email].name} type="hidden" value={@current_email} />
 
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
-                      Новый пароль
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
+                      Новый Ключ (Пароль)
                     </label>
                     <input
                       type="password"
                       name="user[password]"
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                      class="w-full bg-background border border-border/60 text-foreground px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all font-body tracking-[0.5em]"
                     />
                     <%= if error = List.first(@password_form[:password].errors) do %>
-                      <span class="text-[10px] text-red-400 font-body italic">
-                        <%= translate_error(error) %>
-                      </span>
+                      <div class="text-[9px] text-red-500 font-headline uppercase tracking-widest bg-red-900/10 border border-red-900/30 p-2 mt-2">
+                        Ошибка: <%= translate_error(error) %>
+                      </div>
                     <% end %>
                   </div>
 
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
-                      Подтверждение пароля
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
+                      Повторите Ключ
                     </label>
                     <input
                       type="password"
                       name="user[password_confirmation]"
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                      class="w-full bg-background border border-border/60 text-foreground px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all font-body tracking-[0.5em]"
                     />
                   </div>
 
-                  <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
-                      Текущий пароль
+                  <div class="space-y-2">
+                    <label class="text-[9px] font-headline text-foreground/50 uppercase tracking-[0.2em] px-2 block">
+                      Старый Ключ (Текущий Пароль)
                     </label>
                     <input
                       type="password"
                       name="current_password"
                       id="current_password_for_password"
-                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                      class="w-full bg-background border border-border/60 text-foreground px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all font-body tracking-[0.5em]"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20"
+                    class="w-full py-3 bg-red-900/10 border border-red-900/50 hover:bg-red-900/30 text-red-500 font-headline text-[10px] tracking-[0.2em] uppercase transition-all"
                   >
-                    ОБНОВИТЬ ПАРОЛЬ
+                    Перековать Ключ Защиты
                   </button>
                 </.form>
               </div>

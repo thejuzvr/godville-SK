@@ -18,7 +18,9 @@ defmodule GodvilleSk.Game.LogMetadata do
     "resurrection",
     "quest_event",
     "quest_started",
-    "memory"
+    "memory",
+    "injury",
+    "limb_loss"
   ]
 
   # Схемы валидации для каждого типа события.
@@ -33,7 +35,9 @@ defmodule GodvilleSk.Game.LogMetadata do
     "resurrection" => [],
     "quest_event" => [],
     "quest_started" => [],
-    "memory" => []
+    "memory" => [],
+    "injury" => [],
+    "limb_loss" => []
   }
 
   def validate(metadata, context \\ :normal)

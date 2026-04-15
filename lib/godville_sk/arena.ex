@@ -6,7 +6,9 @@ defmodule GodvilleSk.Arenas do
   import Ecto.Query, warn: false
   alias GodvilleSk.{Repo, Game}
   alias GodvilleSk.Game.Hero
-  alias GodvilleSk.Arena.{Arena, ArenaParticipant, Matchmaking}
+  alias GodvilleSk.Arena
+  alias GodvilleSk.ArenaParticipant
+  alias GodvilleSk.Arena.Matchmaking
 
   def list_arenas do
     Repo.all(Arena)
@@ -63,8 +65,8 @@ defmodule GodvilleSk.Arenas do
 
   def get_arena_battles(hero_id) do
     query =
-      from(ap in "arena_participants",
-        join: a in "arenas",
+      from(ap in ArenaParticipant,
+        join: a in Arena,
         on: ap.arena_id == a.id,
         where: ap.character_id == ^hero_id,
         order_by: [desc: a.inserted_at],

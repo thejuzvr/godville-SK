@@ -19,6 +19,8 @@ defmodule GodvilleSkWeb.NavComponents do
       <div class="flex items-center gap-1 text-xs font-headline tracking-wide h-full">
         <.nav_link href={~p"/dashboard"} active={@active_tab == :dashboard}>Основное</.nav_link>
         <.nav_link href={~p"/equipment"} active={@active_tab == :equipment}>Снаряжение</.nav_link>
+        <.nav_link href={~p"/marketplace"} active={@active_tab == :marketplace}>Рынок</.nav_link>
+        <.nav_link href={~p"/arena"} active={@active_tab == :arena}>Арена</.nav_link>
         <.nav_link href={~p"/analytics"} active={@active_tab == :analytics}>Аналитика</.nav_link>
         <.nav_link href={~p"/temple"} active={@active_tab == :temple}>Храм Даэдра</.nav_link>
         <.nav_link href={~p"/users/settings"} active={@active_tab == :profile}>Профиль</.nav_link>

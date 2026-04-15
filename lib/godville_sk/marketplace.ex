@@ -7,7 +7,7 @@ defmodule GodvilleSk.Marketplace do
   import Ecto.Query, warn: false
   alias GodvilleSk.Repo
   alias GodvilleSk.Game.Hero
-  alias GodvilleSk.Arena
+  alias GodvilleSk.Arenas
   alias GodvilleSk.Game
   alias GodvilleSk.Accounts.User
   alias GodvilleSk.Marketplace.Trade
@@ -28,11 +28,12 @@ defmodule GodvilleSk.Marketplace do
     |> Repo.insert()
   end
 
-  def create_item_trade(seller_id, item_id, price) when is_integer(price) and price > 0 do
+  def create_item_trade(seller_id, item_name, price) when is_integer(price) and price > 0 do
     %Trade{}
     |> Trade.changeset(%{
       seller_id: seller_id,
-      item_id: item_id,
+      item_name: item_name,
+      type: :item,
       price: price,
       status: :active
     })
@@ -52,7 +53,7 @@ defmodule GodvilleSk.Marketplace do
       character.status == :combat ->
         {:error, :character_in_combat}
 
-      Arena.get_active_arena_for_hero(character_id) ->
+      Arenas.get_active_arena_for_hero(character_id) ->
         {:error, :character_in_arena}
 
       true ->
@@ -83,15 +84,10 @@ defmodule GodvilleSk.Marketplace do
         if buyer.gold < trade.price do
           {:error, :insufficient_gold}
         else
-          Repo.transaction(fn ->
-            case trade.type do
-              :item ->
-                complete_item_trade(trade, buyer)
-
-              :soul ->
-                complete_soul_trade(trade, buyer)
-            end
-          end)
+          case trade.type do
+            :item -> complete_item_trade(trade, buyer)
+            :soul -> complete_soul_trade(trade, buyer)
+          end
         end
     end
   end

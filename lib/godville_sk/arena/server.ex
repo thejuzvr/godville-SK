@@ -102,9 +102,11 @@ defmodule GodvilleSk.Arena.Server do
     new_state = process_round(state)
 
     if new_state.status == :finished do
+      broadcast_arena_global(new_state)
       broadcast_arena_result(new_state)
       {:stop, :normal, new_state}
     else
+      broadcast_arena_global(new_state)
       schedule_tick()
       {:noreply, new_state}
     end
@@ -116,10 +118,15 @@ defmodule GodvilleSk.Arena.Server do
     case state.status do
       :waiting ->
         broadcast_start(state)
-        Map.put(state, :status, :active)
+        state
+        |> Map.put(:status, :active)
+        |> add_log("🔥 Бой на арене начинается!")
 
       :active ->
         state = %{state | round: state.round + 1}
+        # Clear round log visually later, or just keep appending
+        state = add_log(state, "--- Раунд #{state.round} ---")
+        
         state = process_team_turn(state, :team1)
         state = process_team_turn(state, :team2)
 
@@ -145,8 +152,9 @@ defmodule GodvilleSk.Arena.Server do
         target_id = Enum.random(opponent_ids)
 
         case attack_in_arena(hero_state, target_id) do
-          {:ok, updated_target_hp} ->
-            broadcast_attack(hero_id, target_id, acc_state.id)
+          {:ok, updated_target_hp, damage, target_name} ->
+            acc_state = add_log(acc_state, "⚔️ #{hero_state.name} бьет #{target_name} на #{damage} урона. (Осталось: #{updated_target_hp} ОЗ)")
+            broadcast_attack(hero_id, target_id, damage, acc_state.id)
             acc_state
 
           :target_dead ->
@@ -169,7 +177,7 @@ defmodule GodvilleSk.Arena.Server do
       |> Hero.changeset(%{hp: new_hp})
       |> Repo.update()
 
-      {:ok, new_hp}
+      {:ok, new_hp, damage, target.name}
     else
       :target_dead
     end
@@ -229,9 +237,12 @@ defmodule GodvilleSk.Arena.Server do
         team = if hero_id in state.team1, do: :team1, else: :team2
         reward = Map.get(rewards, team, %{})
         apply_rewards(hero, reward, winner == team)
+        # Resume hero AI after arena
+        GodvilleSk.Hero.resume_from_arena(hero.name)
       end
     end)
 
+    state = add_log(state, "🏆 Бой завершен! Победитель: #{if winner == :team1, do: "Команда 1", else: if winner == :team2, do: "Команда 2", else: "Ничья"}")
     %{state | status: :finished, winner: winner, rewards: rewards}
   end
 
@@ -285,11 +296,16 @@ defmodule GodvilleSk.Arena.Server do
     end)
   end
 
-  defp broadcast_attack(attacker_id, target_id, arena_id) do
+  defp broadcast_attack(attacker_id, target_id, damage, arena_id) do
     Phoenix.PubSub.broadcast(
       GodvilleSk.PubSub,
       "hero:#{attacker_id}",
-      {:arena_attack, %{arena_id: arena_id, target_id: target_id}}
+      {:arena_attack, %{arena_id: arena_id, target_id: target_id, damage: damage}}
+    )
+    Phoenix.PubSub.broadcast(
+      GodvilleSk.PubSub,
+      "arena:#{arena_id}",
+      {:arena_attack, %{attacker_id: attacker_id, target_id: target_id, damage: damage}}
     )
   end
 
@@ -301,5 +317,14 @@ defmodule GodvilleSk.Arena.Server do
         {:arena_result, %{arena_id: state.id, winner: state.winner, rewards: state.rewards}}
       )
     end)
+  end
+
+  defp broadcast_arena_global(state) do
+    Phoenix.PubSub.broadcast(GodvilleSk.PubSub, "arena:#{state.id}", {:arena_update, state})
+  end
+
+  defp add_log(state, message) do
+    new_log = [%{msg: message, time: DateTime.utc_now()} | state.log]
+    %{state | log: new_log}
   end
 end

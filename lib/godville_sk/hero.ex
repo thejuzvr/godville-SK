@@ -193,6 +193,18 @@ defmodule GodvilleSk.Hero do
 
   # --- Debug API ---
 
+  @doc "Pauses hero AI tick during an arena fight. Saves status to restore after."
+  def pause_for_arena(hero_name) do
+    GenServer.cast(via_tuple(hero_name), :pause_for_arena)
+  end
+
+  @doc "Resumes hero AI after arena fight ends."
+  def resume_from_arena(hero_name) do
+    GenServer.cast(via_tuple(hero_name), :resume_from_arena)
+  end
+
+  # --- Debug API ---
+
   def debug_update(hero_name, updates) do
     GenServer.cast(via_tuple(hero_name), {:debug_update, updates})
   end
@@ -236,6 +248,13 @@ defmodule GodvilleSk.Hero do
     )
 
     {:ok, StateMachine.add_to_log(state, "Пронулся в таверне. Пора за работу!")}
+  end
+
+  @impl true
+  def handle_info(:tick, %{status: :arena_paused} = state) do
+    # Hero is in arena — skip AI tick, just reschedule
+    schedule_tick()
+    {:noreply, state}
   end
 
   @impl true
@@ -437,6 +456,32 @@ defmodule GodvilleSk.Hero do
     state = Actions.debug_remove_inventory(state, item)
     broadcast_update(state)
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast(:pause_for_arena, state) do
+    # Save current status so we can restore it after arena
+    paused_state =
+      state
+      |> Map.put(:pre_arena_status, state.status)
+      |> Map.put(:status, :arena_paused)
+
+    broadcast_update(paused_state)
+    {:noreply, paused_state}
+  end
+
+  @impl true
+  def handle_cast(:resume_from_arena, state) do
+    restored_status = Map.get(state, :pre_arena_status, :idle)
+
+    resumed_state =
+      state
+      |> Map.put(:status, restored_status)
+      |> Map.put(:pre_arena_status, nil)
+      |> StateMachine.add_to_log("Бой на арене завершён. Продолжаю обычные дела.")
+
+    broadcast_update(resumed_state)
+    {:noreply, resumed_state}
   end
 
   @impl true
