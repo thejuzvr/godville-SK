@@ -114,4 +114,9 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  tick_interval_prod =
+    System.get_env("TICK_INTERVAL_MS") |> then(&if &1, do: String.to_integer(&1), else: 10_000)
+
+  config :godville_sk, :tick_interval, dev: 2_000, prod: tick_interval_prod
 end

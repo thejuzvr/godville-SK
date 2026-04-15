@@ -77,6 +77,8 @@ defmodule GodvilleSkWeb.Router do
       live "/equipment", EquipmentLive, :index
       live "/analytics", AnalyticsLive, :index
       live "/temple", TempleLive, :index
+      live "/arena", ArenaLive, :index
+      live "/marketplace", MarketplaceLive, :index
       live "/admin", AdminLive, :index
     end
   end

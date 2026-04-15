@@ -8,7 +8,18 @@ defmodule GodvilleSk.GameTest do
 
     import GodvilleSk.GameFixtures
 
-    @invalid_attrs %{attributes: nil, class: nil, exp: nil, gold: nil, hp: nil, level: nil, max_hp: nil, name: nil, perks: nil, race: nil}
+    @invalid_attrs %{
+      attributes: nil,
+      class: nil,
+      exp: nil,
+      gold: nil,
+      hp: nil,
+      level: nil,
+      max_hp: nil,
+      name: nil,
+      perks: nil,
+      race: nil
+    }
 
     test "list_heroes/0 returns all heroes" do
       hero = hero_fixture()
@@ -21,7 +32,18 @@ defmodule GodvilleSk.GameTest do
     end
 
     test "create_hero/1 with valid data creates a hero" do
-      valid_attrs = %{attributes: %{}, class: "some class", exp: 42, gold: 42, hp: 42, level: 42, max_hp: 42, name: "some name", perks: ["option1", "option2"], race: "some race"}
+      valid_attrs = %{
+        attributes: %{},
+        class: "some class",
+        exp: 42,
+        gold: 42,
+        hp: 42,
+        level: 42,
+        max_hp: 42,
+        name: "some name",
+        perks: ["option1", "option2"],
+        race: "some race"
+      }
 
       assert {:ok, %Hero{} = hero} = Game.create_hero(valid_attrs)
       assert hero.attributes == %{}
@@ -42,7 +64,19 @@ defmodule GodvilleSk.GameTest do
 
     test "update_hero/2 with valid data updates the hero" do
       hero = hero_fixture()
-      update_attrs = %{attributes: %{}, class: "some updated class", exp: 43, gold: 43, hp: 43, level: 43, max_hp: 43, name: "some updated name", perks: ["option1"], race: "some updated race"}
+
+      update_attrs = %{
+        attributes: %{},
+        class: "some updated class",
+        exp: 43,
+        gold: 43,
+        hp: 43,
+        level: 43,
+        max_hp: 43,
+        name: "some updated name",
+        perks: ["option1"],
+        race: "some updated race"
+      }
 
       assert {:ok, %Hero{} = hero} = Game.update_hero(hero, update_attrs)
       assert hero.attributes == %{}

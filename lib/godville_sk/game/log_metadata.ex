@@ -5,7 +5,7 @@ defmodule GodvilleSk.Game.LogMetadata do
   """
 
   # Допустимые контексты событий.
-  @contexts [:normal, :sovngarde]
+  @contexts [:normal, :sovngarde, :battle_keeper]
 
   # Допустимые типы событий.
   @event_types [
@@ -15,7 +15,12 @@ defmodule GodvilleSk.Game.LogMetadata do
     "sovngarde_task",
     "sovngarde_thought",
     "death",
-    "resurrection"
+    "resurrection",
+    "quest_event",
+    "quest_started",
+    "memory",
+    "injury",
+    "limb_loss"
   ]
 
   # Схемы валидации для каждого типа события.
@@ -27,10 +32,16 @@ defmodule GodvilleSk.Game.LogMetadata do
     "sovngarde_task" => [:task_id, :title],
     "sovngarde_thought" => [],
     "death" => [],
-    "resurrection" => []
+    "resurrection" => [],
+    "quest_event" => [],
+    "quest_started" => [],
+    "memory" => [],
+    "injury" => [],
+    "limb_loss" => []
   }
 
   def validate(metadata, context \\ :normal)
+
   def validate(metadata, context) when is_map(metadata) do
     with {:ok, _} <- validate_context(context),
          {:ok, _} <- validate_event_type(metadata),
@@ -105,7 +116,9 @@ defmodule GodvilleSk.Game.LogMetadata do
       {:ok, :no_type}
     else
       case schema_for_type(type) do
-        nil -> {:error, {:unknown_schema, type}}
+        nil ->
+          {:error, {:unknown_schema, type}}
+
         required_fields ->
           validate_required_fields(metadata, required_fields, type)
       end

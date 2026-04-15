@@ -44,11 +44,13 @@ defmodule GodvilleSk.Game do
     case :global.whereis_name({:hero, hero.name}) do
       :undefined ->
         spec = {GodvilleSk.Hero, [id: hero.id, name: hero.name]}
+
         case DynamicSupervisor.start_child(GodvilleSk.HeroSupervisor, spec) do
           {:ok, pid} -> {:ok, pid}
           {:error, {:already_started, pid}} -> {:ok, pid}
           error -> error
         end
+
       pid ->
         {:ok, pid}
     end
@@ -60,7 +62,9 @@ defmodule GodvilleSk.Game do
   """
   def get_hero_live_state(%Hero{} = hero) do
     case :global.whereis_name({:hero, hero.name}) do
-      :undefined -> nil
+      :undefined ->
+        nil
+
       _pid ->
         try do
           GodvilleSk.Hero.get_state(hero.name, 2000)

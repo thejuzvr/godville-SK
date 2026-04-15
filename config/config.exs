@@ -29,6 +29,7 @@ config :godville_sk, GodvilleSkWeb.Endpoint,
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
 config :godville_sk, GodvilleSk.Mailer, adapter: Swoosh.Adapters.Local
+config :swoosh, :api_client, false
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -59,6 +60,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :godville_sk, :tick_interval, dev: 2000, prod: 10000
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

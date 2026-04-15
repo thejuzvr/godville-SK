@@ -96,6 +96,30 @@ Hooks.SovngardeTimer = {
   }
 }
 
+// Arena queue stopwatch — counts up from queue join time
+Hooks.ArenaQueueStopwatch = {
+  mounted() {
+    this.startedAt = new Date(this.el.dataset.joinedAt || Date.now())
+    this.tick()
+    this.interval = setInterval(() => this.tick(), 1000)
+  },
+  updated() {
+    const newJoinedAt = this.el.dataset.joinedAt
+    if (newJoinedAt) {
+      this.startedAt = new Date(newJoinedAt)
+    }
+  },
+  destroyed() {
+    if (this.interval) clearInterval(this.interval)
+  },
+  tick() {
+    const diff = Math.floor((Date.now() - this.startedAt) / 1000)
+    const mins = Math.floor(diff / 60)
+    const secs = diff % 60
+    this.el.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
+  }
+}
+
 import {DiceRollerHook} from "../vendor/d20"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

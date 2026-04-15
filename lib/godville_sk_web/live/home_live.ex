@@ -71,127 +71,159 @@ defmodule GodvilleSkWeb.HomeLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-background text-foreground">
-      <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        <div class="relative hidden lg:block">
-          <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-80"></div>
-          <div class="absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-background"></div>
+    <div class="min-h-screen bg-background text-foreground relative flex items-center justify-center p-4 lg:p-8">
+      <!-- Background texture/image with heavy overlay -->
+      <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-30"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+      <div class="absolute inset-0 border-[8px] md:border-[16px] border-background/90 z-10 pointer-events-none"></div>
 
-          <div class="relative z-10 h-full p-10 flex flex-col justify-between">
-            <div class="flex items-center gap-2 text-primary font-headline tracking-wider">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/30">E</span>
-              <span>ElderScrollsIdle</span>
+      <!-- Core monolith -->
+      <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 bg-card/80 border border-border/80 backdrop-blur-md relative z-20 shadow-2xl">
+        
+        <!-- Left storytelling column (Editorial) -->
+        <div class="p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-border/50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 text-primary font-headline tracking-widest uppercase text-xs mb-8">
+              <span class="inline-block w-2 h-2 bg-primary"></span>
+              ElderScrollsIdle
             </div>
-
-            <div class="max-w-xl">
-              <div class="text-foreground/80 font-headline text-xl">
-                "Единственная настоящая сила идёт изнутри."
-              </div>
-              <div class="mt-2 text-sm text-foreground/50 font-body">Старая орочья пословица</div>
+            <h1 class="font-headline text-4xl lg:text-5xl text-foreground leading-[1.1] tracking-tight mb-4">
+              Судьба<br/>Ожидает
+            </h1>
+            <p class="text-foreground/70 font-body leading-relaxed text-sm lg:text-base max-w-sm mt-6 border-l-2 border-foreground/20 pl-4 py-1">
+              Ваша эпическая история начинается здесь. Войдите в архив героев или добавьте новое имя в летописи Тамриэля.
+            </p>
+          </div>
+          
+          <div class="mt-12 lg:mt-0 p-4 bg-background/50 border border-border/30 relative">
+            <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40"></div>
+            <div class="text-foreground/90 font-headline text-lg italic tracking-wide">
+              "Единственная настоящая сила идёт изнутри."
+            </div>
+            <div class="mt-3 text-[10px] text-foreground/50 font-body uppercase tracking-wider">
+              Старая оркская пословица
             </div>
           </div>
         </div>
 
-        <div class="flex items-center justify-center p-6 lg:p-10">
-          <div class="w-full max-w-md">
-            <div class="text-center mb-6">
-              <h1 class="font-headline text-3xl text-primary tracking-wide">Добро пожаловать, странник</h1>
-              <p class="mt-2 text-sm text-foreground/60 font-body">
-                Ваша эпическая история начинается здесь. Войдите или создайте своего героя.
-              </p>
-            </div>
+        <!-- Right interactive column (Utilitarian Terminal) -->
+        <div class="p-8 lg:p-12 bg-background/70 flex flex-col justify-center relative">
+          <!-- Decorative corners -->
+          <div class="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/50"></div>
+          <div class="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/50"></div>
+          <div class="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary/50"></div>
+          <div class="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/50"></div>
 
-            <div class="bg-card border border-border/50 shadow-2xl p-6 md:p-8">
-              <div class="flex gap-2 mb-6 bg-secondary/40 p-1 rounded-md">
-                <button
-                  type="button"
-                  phx-click="switch_tab"
-                  phx-value-tab="login"
-                  class={[
-                    "flex-1 px-3 py-2 text-sm font-headline tracking-wide rounded",
-                    @tab == :login && "bg-background border border-border/60",
-                    @tab != :login && "text-foreground/70 hover:text-foreground"
-                  ]}
-                >
-                  Вход
-                </button>
-                <button
-                  type="button"
-                  phx-click="switch_tab"
-                  phx-value-tab="register"
-                  class={[
-                    "flex-1 px-3 py-2 text-sm font-headline tracking-wide rounded",
-                    @tab == :register && "bg-background border border-border/60",
-                    @tab != :register && "text-foreground/70 hover:text-foreground"
-                  ]}
-                >
-                  Регистрация
-                </button>
+          <div class="flex gap-0 border-b border-border/80 mb-8 mt-2">
+            <button
+              type="button"
+              phx-click="switch_tab"
+              phx-value-tab="login"
+              class={[
+                "flex-1 px-4 py-3 text-xs font-headline tracking-widest uppercase transition-all border-b-2",
+                @tab == :login && "text-primary border-primary bg-primary/5",
+                @tab != :login && "text-foreground/40 border-transparent hover:text-foreground/70 hover:bg-foreground/5"
+              ]}
+            >
+              Врата
+            </button>
+            <button
+              type="button"
+              phx-click="switch_tab"
+              phx-value-tab="register"
+              class={[
+                "flex-1 px-4 py-3 text-xs font-headline tracking-widest uppercase transition-all border-b-2",
+                @tab == :register && "text-primary border-primary bg-primary/5",
+                @tab != :register && "text-foreground/40 border-transparent hover:text-foreground/70 hover:bg-foreground/5"
+              ]}
+            >
+              Ритуал
+            </button>
+          </div>
+
+          <div :if={@tab == :login}>
+            <.form
+              for={@login_form}
+              id="login_form"
+              action={~p"/users/log_in"}
+              phx-update="ignore"
+              class="space-y-6"
+            >
+              <div class="space-y-1">
+                <label class="block text-[10px] text-primary/70 font-headline uppercase tracking-widest">
+                  Свиток почты
+                </label>
+                <.input field={@login_form[:email]} type="email" required class="w-full" />
               </div>
 
-              <div :if={@tab == :login}>
-                <.form for={@login_form} id="login_form" action={~p"/users/log_in"} phx-update="ignore" class="space-y-4">
-                  <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Электронная почта</label>
-                    <.input field={@login_form[:email]} type="email" required class="w-full" />
-                  </div>
-
-                  <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Пароль</label>
-                    <.input field={@login_form[:password]} type="password" required class="w-full" />
-                  </div>
-
-                  <div class="flex items-center justify-between">
-                    <label class="flex items-center gap-2 text-xs text-foreground/60">
-                      <.input field={@login_form[:remember_me]} type="checkbox" />
-                      Запомнить меня
-                    </label>
-                    <.link href={~p"/users/reset_password"} class="text-xs text-primary underline hover:text-primary/80">
-                      Забыли пароль?
-                    </.link>
-                  </div>
-
-                  <button type="submit" class="w-full px-4 py-2 bg-primary text-primary-foreground font-headline tracking-wide">
-                    Войти
-                  </button>
-                </.form>
+              <div class="space-y-1">
+                <label class="block text-[10px] text-primary/70 font-headline uppercase tracking-widest">
+                  Тайное слово (Пароль)
+                </label>
+                <.input field={@login_form[:password]} type="password" required class="w-full" />
               </div>
 
-              <div :if={@tab == :register}>
-                <.form
-                  for={@register_form}
-                  id="registration_form"
-                  phx-submit="save"
-                  phx-change="validate"
-                  phx-trigger-action={@trigger_submit}
-                  action={~p"/users/log_in?_action=registered"}
-                  method="post"
-                  class="space-y-4"
+              <div class="flex items-center justify-between pt-2">
+                <label class="flex items-center gap-2 text-xs text-foreground/60 font-body tracking-wide">
+                  <.input field={@login_form[:remember_me]} type="checkbox" /> Запомнить руны
+                </label>
+                <.link
+                  href={~p"/users/reset_password"}
+                  class="text-[10px] text-primary/60 hover:text-primary font-headline uppercase tracking-widest transition-colors"
                 >
-                  <.error :if={@check_errors}>
-                    Проверьте поля формы — есть ошибки.
-                  </.error>
-
-                  <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Электронная почта</label>
-                    <.input field={@register_form[:email]} type="email" required class="w-full" />
-                  </div>
-
-                  <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Пароль</label>
-                    <.input field={@register_form[:password]} type="password" required class="w-full" />
-                  </div>
-
-                  <button
-                    type="submit"
-                    phx-disable-with="Создаю аккаунт..."
-                    class="w-full px-4 py-2 bg-primary text-primary-foreground font-headline tracking-wide"
-                  >
-                    Создать аккаунт
-                  </button>
-                </.form>
+                  Забыли пароль?
+                </.link>
               </div>
-            </div>
+
+              <button
+                type="submit"
+                class="w-full mt-4 border border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary px-6 py-4 font-headline uppercase tracking-widest transition-all focus:outline-none focus:ring-1 focus:ring-primary"
+              >
+                Войти в Мир
+              </button>
+            </.form>
+          </div>
+
+          <div :if={@tab == :register}>
+            <.form
+              for={@register_form}
+              id="registration_form"
+              phx-submit="save"
+              phx-change="validate"
+              phx-trigger-action={@trigger_submit}
+              action={~p"/users/log_in?_action=registered"}
+              method="post"
+              class="space-y-6"
+            >
+              <.error :if={@check_errors}>
+                <div class="text-xs font-body p-2 bg-red-500/10 border border-red-500/30 text-red-500 uppercase tracking-wide">
+                  Архивы отвергли запись — проверьте символы.
+                </div>
+              </.error>
+
+              <div class="space-y-1">
+                <label class="block text-[10px] text-primary/70 font-headline uppercase tracking-widest">
+                  Свиток почты
+                </label>
+                <.input field={@register_form[:email]} type="email" required class="w-full" />
+              </div>
+
+              <div class="space-y-1">
+                <label class="block text-[10px] text-primary/70 font-headline uppercase tracking-widest">
+                  Сформировать слово (Пароль)
+                </label>
+                <.input field={@register_form[:password]} type="password" required class="w-full" />
+              </div>
+
+              <button
+                type="submit"
+                phx-disable-with="Написание рун..."
+                class="w-full mt-4 border border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary px-6 py-4 font-headline uppercase tracking-widest transition-all focus:outline-none focus:ring-1 focus:ring-primary"
+              >
+                Начать Хронику
+              </button>
+            </.form>
           </div>
         </div>
       </div>
@@ -199,4 +231,3 @@ defmodule GodvilleSkWeb.HomeLive do
     """
   end
 end
-

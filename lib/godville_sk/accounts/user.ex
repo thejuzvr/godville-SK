@@ -9,7 +9,7 @@ defmodule GodvilleSk.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
     field :dice_theme, :string, default: "default"
-    
+
     timestamps(type: :utc_datetime)
   end
 
@@ -19,7 +19,9 @@ defmodule GodvilleSk.Accounts.User do
   def dice_theme_changeset(user, attrs) do
     user
     |> cast(attrs, [:dice_theme])
-    |> validate_inclusion(:dice_theme, ["default", "crimson", "obsidian", "paper"], message: "Invalid dice theme")
+    |> validate_inclusion(:dice_theme, ["default", "crimson", "obsidian", "paper"],
+      message: "Invalid dice theme"
+    )
   end
 
   @doc """

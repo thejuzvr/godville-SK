@@ -7,15 +7,22 @@ defmodule GodvilleSkWeb.EquipmentLive do
 
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
+
     case Game.get_hero_by_user_id(user.id) do
       nil ->
         {:ok, push_navigate(socket, to: ~p"/hero/new")}
+
       hero ->
         if connected?(socket) do
           Phoenix.PubSub.subscribe(GodvilleSk.PubSub, "hero:#{hero.id}")
         end
+
         hero_state = Game.get_hero_live_state(hero)
-        {:ok, 
+
+        # Convert embedded struct to map for template rendering
+        hero_state = %{hero_state | equipment: Map.from_struct(hero_state.equipment)}
+
+        {:ok,
          socket
          |> assign(:hero, hero)
          |> assign(:hero_state, hero_state)
@@ -43,139 +50,240 @@ defmodule GodvilleSkWeb.EquipmentLive do
   end
 
   def handle_info({:hero_update, hero_state}, socket) do
+    # Convert embedded struct to map for template rendering
+    hero_state = %{hero_state | equipment: Map.from_struct(hero_state.equipment)}
     {:noreply, assign(socket, :hero_state, hero_state)}
   end
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col h-screen bg-background text-foreground font-body overflow-hidden">
-      <.game_nav active_tab={:equipment} />
-      
-      <main class="flex-1 overflow-y-auto p-6 max-w-5xl mx-auto w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
+    <div class="flex flex-col h-screen bg-background text-foreground font-body overflow-hidden relative">
+      <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-10 pointer-events-none">
+      </div>
+
+      <div class="relative z-10 border-b-2 border-border/80 bg-background/90 backdrop-blur-sm">
+        <.game_nav active_tab={:equipment} />
+      </div>
+
+      <main class="flex-1 overflow-y-auto p-4 lg:p-8 max-w-6xl mx-auto w-full relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <!-- Character Equipment View -->
-          <section class="bg-card/30 border border-border/50 p-6 rounded-lg backdrop-blur-sm">
-            <h2 class="font-headline text-primary text-xl mb-6 uppercase tracking-wider flex items-center gap-2">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7v5c0 5.25 4.25 10.15 10 11.25C17.75 22.15 22 17.25 22 12V7L12 2z" />
-              </svg>
-              Снаряжение
+          <section class="lg:col-span-5 bg-background/80 border border-border/80 p-8 backdrop-blur-md relative transform">
+            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/50"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/50">
+            </div>
+
+            <h2 class="font-headline text-primary text-xl mb-12 uppercase tracking-[0.2em] flex items-center justify-center gap-3 border-b border-border/30 pb-4">
+              <span class="w-2 h-2 bg-primary transform rotate-45"></span>
+              Снаряжение <span class="w-2 h-2 bg-primary transform rotate-45"></span>
             </h2>
-            
-            <div class="relative w-full aspect-[3/4] max-w-[320px] mx-auto bg-gradient-to-b from-primary/5 to-transparent rounded-full flex flex-col items-center justify-center border border-primary/10">
+
+            <div class="relative w-full aspect-[3/4] max-w-[320px] mx-auto bg-primary/5 flex flex-col items-center justify-center border-y border-primary/10">
               <!-- Silhouette placeholder -->
-              <svg class="absolute inset-0 w-full h-full opacity-5 pointer-events-none" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                class="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
               </svg>
-              
               <!-- Slots Grid around silhouette -->
-              <div class="grid grid-cols-3 gap-12 z-10">
-                <div class="flex flex-col gap-6">
-                  <.equipment_slot slot={:head} icon="M12 2L2 7l10 5 10-5-10-5z" hero_state={@hero_state} />
-                  <.equipment_slot slot={:amulet} icon="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" hero_state={@hero_state} />
-                  <.equipment_slot slot={:arms} icon="M2 13h5l3 8 4-16 4 8h4" hero_state={@hero_state} />
+              <div class="grid grid-cols-3 gap-10 lg:gap-14 z-10 mt-6">
+                <!-- Left Column -->
+                <div class="flex flex-col gap-10">
+                  <.equipment_slot
+                    slot={:head}
+                    icon="M12 2L2 7l10 5 10-5-10-5z"
+                    hero_state={@hero_state}
+                  />
+                  <.equipment_slot
+                    slot={:amulet}
+                    icon="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"
+                    hero_state={@hero_state}
+                  />
+                  <.equipment_slot
+                    slot={:arms}
+                    icon="M2 13h5l3 8 4-16 4 8h4"
+                    hero_state={@hero_state}
+                  />
                 </div>
-                
-                <div class="flex flex-col gap-12 pt-8">
+                <!-- Center Column -->
+                <div class="flex flex-col gap-14 pt-12">
                   <.equipment_slot slot={:torso} icon="M12 1v22M5 12h14" hero_state={@hero_state} />
                   <.equipment_slot slot={:legs} icon="M9 1v22M15 1v22" hero_state={@hero_state} />
                 </div>
-                
-                <div class="flex flex-col gap-6">
-                  <.equipment_slot slot={:weapon} icon="M14.5 9.5l5 5m0-5l-5 5m-5-5l5 5m0-5l-5 5" hero_state={@hero_state} />
-                  <.equipment_slot slot={:ring} icon="M12 22a10 10 0 100-20 10 10 0 000 20z" hero_state={@hero_state} />
+                <!-- Right Column -->
+                <div class="flex flex-col gap-10">
+                  <.equipment_slot
+                    slot={:weapon}
+                    icon="M14.5 9.5l5 5m0-5l-5 5m-5-5l5 5m0-5l-5 5"
+                    hero_state={@hero_state}
+                  />
+                  <.equipment_slot
+                    slot={:ring}
+                    icon="M12 22a10 10 0 100-20 10 10 0 000 20z"
+                    hero_state={@hero_state}
+                  />
                   <.equipment_slot slot={:boots} icon="M4 16v4h4m8-4v4h4" hero_state={@hero_state} />
                 </div>
               </div>
             </div>
           </section>
-
           <!-- Inventory Grid -->
-          <section class="bg-card/30 border border-border/50 p-6 rounded-lg backdrop-blur-sm">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="font-headline text-primary text-xl uppercase tracking-wider flex items-center gap-2">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 8V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V8M1 3H23M10 12H14" />
-                </svg>
-                Инвентарь
-              </h2>
-              <span class="text-xs text-foreground/50"><%= length(@hero_state.inventory) %> / <%= @hero_state.inventory_capacity %></span>
+          <section class="lg:col-span-7 bg-background/80 border border-border/80 p-8 backdrop-blur-md relative">
+            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/50"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/50">
             </div>
-            
-            <div class="grid grid-cols-5 gap-3">
-              <%= for item_name <- @hero_state.inventory do %>
-                <div 
-                  phx-click="select_item" 
-                  phx-value-name={item_name}
-                  class="aspect-square bg-background/50 border border-border/40 hover:border-primary/60 hover:bg-primary/5 transition-all cursor-pointer flex items-center justify-center p-2 rounded shadow-inner group relative"
-                >
-                  <div class="w-full h-full bg-primary/10 rounded-sm flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                    <span class="text-[10px] text-center leading-tight"><%= String.slice(item_name, 0, 8) %>...</span>
+
+            <div class="flex items-end justify-between border-b border-border/30 pb-4 mb-8">
+              <h2 class="font-headline text-primary text-xl uppercase tracking-[0.2em] flex items-center gap-3">
+                <span class="w-2 h-2 bg-primary transform rotate-45"></span> Сумка
+              </h2>
+              <div class="flex flex-col items-end gap-1 text-[10px] uppercase font-headline tracking-widest text-foreground/50">
+                <span>
+                  Ячейки: <span class="text-primary/80"><%= length(@hero_state.inventory) %></span>
+                  / <%= @hero_state.inventory_capacity %>
+                </span>
+                <span class={
+                  if @hero_state.overload_penalty < 0,
+                    do: "text-red-400 border-b border-red-400 border-dashed",
+                    else: ""
+                }>
+                  Бремя: <%= round(@hero_state.inventory_weight * 10) / 10 %>/50 кг <%= if @hero_state.overload_penalty <
+                                                                                             0,
+                                                                                           do:
+                                                                                             "(-2 удачи)",
+                                                                                           else: "" %>
+                </span>
+              </div>
+            </div>
+
+            <div class="h-80 overflow-y-auto mb-4 pr-3 custom-scrollbar">
+              <div class="grid grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-3">
+                <%= for item_name <- @hero_state.inventory do %>
+                  <div
+                    phx-click="select_item"
+                    phx-value-name={item_name}
+                    class="aspect-square bg-background/50 border border-border/40 hover:border-primary/80 hover:bg-primary/10 transition-all cursor-pointer flex items-center justify-center p-2 group relative"
+                  >
+                    <!-- Corner marks -->
+                    <div class="absolute top-1 left-1 w-1 h-1 bg-primary/20 pointer-events-none group-hover:bg-primary/50 transition-colors">
+                    </div>
+                    <div class="absolute bottom-1 right-1 w-1 h-1 bg-primary/20 pointer-events-none group-hover:bg-primary/50 transition-colors">
+                    </div>
+
+                    <div class="w-full h-full flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+                      <span class="text-[9px] text-center font-headline uppercase tracking-wider leading-tight">
+                        <%= String.slice(item_name, 0, 10) %><%= if String.length(item_name) > 10,
+                          do: "..." %>
+                      </span>
+                    </div>
                   </div>
-                </div>
-              <% end %>
-              
-              <%= for _ <- length(@hero_state.inventory)..(@hero_state.inventory_capacity - 1) do %>
-                <div class="aspect-square bg-background/20 border border-border/10 rounded flex items-center justify-center">
-                  <div class="w-1 h-1 bg-foreground/5 rounded-full"></div>
-                </div>
-              <% end %>
+                <% end %>
+
+                <%= for _ <- length(@hero_state.inventory)..(@hero_state.inventory_capacity - 1) do %>
+                  <div class="aspect-square bg-background/20 border border-border/10 border-dashed flex items-center justify-center">
+                    <div class="w-1 h-1 bg-border/20 rotate-45 transform"></div>
+                  </div>
+                <% end %>
+              </div>
             </div>
           </section>
         </div>
       </main>
-
       <!-- Item Detail Modal -->
-      <div :if={@selected_item} class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
-        <div class="bg-card border border-primary/30 w-full max-w-sm overflow-hidden rounded-lg shadow-2xl animate-in fade-in zoom-in duration-200">
-          <div class="p-1 bg-gradient-to-r from-primary/40 via-primary/20 to-primary/40 h-1"></div>
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-4">
+      <div
+        :if={@selected_item}
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm"
+      >
+        <div class="bg-background border border-primary/50 w-full max-w-md overflow-hidden shadow-[0_0_50px_rgba(var(--primary-rgb),0.1)] relative">
+          <!-- Frame corners -->
+          <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary"></div>
+          <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary"></div>
+          <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary"></div>
+          <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary"></div>
+
+          <div class="p-8">
+            <div class="flex justify-between items-start mb-6 border-b border-border/30 pb-4">
               <div>
-                <h3 class="font-headline text-primary text-2xl truncate"><%= @selected_item.name %></h3>
-                <span class={"text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded #{rarity_class(@selected_item.rarity)}"}>
+                <h3 class="font-headline text-primary text-2xl tracking-widest uppercase mb-1">
+                  <%= @selected_item.name %>
+                </h3>
+                <span class={"text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 #{rarity_class(@selected_item.rarity)}"}>
                   <%= @selected_item.rarity %>
                 </span>
               </div>
-              <button phx-click="close_modal" class="text-foreground/40 hover:text-primary transition-colors">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              <button
+                phx-click="close_modal"
+                class="text-foreground/40 hover:text-red-400 transition-colors bg-background border border-border/50 p-1"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
-            
-            <div class="space-y-4">
-              <p class="text-foreground/70 text-sm leading-relaxed italic font-body">
-                "<%= Map.get(@selected_item, :description, "Ничем не примечательный предмет.") %>"
-              </p>
-              
-              <div class="grid grid-cols-2 gap-4 py-3 border-y border-border/30">
-                <div :if={Map.has_key?(@selected_item, :damage)} class="flex flex-col">
-                  <span class="text-[10px] text-foreground/40 uppercase">Урон</span>
-                  <span class="text-xl font-headline text-red-400"><%= @selected_item.damage %></span>
+
+            <div class="space-y-6">
+              <div class="bg-foreground/5 border-l-2 border-primary/30 p-4">
+                <p class="text-foreground/80 text-sm leading-relaxed italic font-body">
+                  "<%= Map.get(@selected_item, :description, "Ничем не примечательный предмет.") %>"
+                </p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4 py-4 border-y border-border/30">
+                <div
+                  :if={Map.has_key?(@selected_item, :damage)}
+                  class="flex flex-col bg-background border border-red-900/40 p-2 text-center"
+                >
+                  <span class="text-[9px] text-red-500/50 uppercase tracking-widest font-headline mb-1">
+                    Урон
+                  </span>
+                  <span class="text-2xl font-headline text-red-500">
+                    <%= @selected_item.damage %>
+                  </span>
                 </div>
-                <div :if={Map.has_key?(@selected_item, :armor)} class="flex flex-col">
-                  <span class="text-[10px] text-foreground/40 uppercase">Броня</span>
-                  <span class="text-xl font-headline text-blue-400"><%= @selected_item.armor %></span>
+                <div
+                  :if={Map.has_key?(@selected_item, :armor)}
+                  class="flex flex-col bg-background border border-blue-900/40 p-2 text-center"
+                >
+                  <span class="text-[9px] text-blue-500/50 uppercase tracking-widest font-headline mb-1">
+                    Броня
+                  </span>
+                  <span class="text-2xl font-headline text-blue-500">
+                    <%= @selected_item.armor %>
+                  </span>
                 </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] text-foreground/40 uppercase">Тип</span>
-                  <span class="text-sm text-foreground/80"><%= @selected_item.type %></span>
+                <div class="flex flex-col bg-background border border-border/40 p-2 text-center col-span-full">
+                  <span class="text-[9px] text-foreground/40 uppercase tracking-widest font-headline mb-1">
+                    Тип Предмета
+                  </span>
+                  <span class="text-sm text-foreground/80 font-headline uppercase tracking-widest">
+                    <%= @selected_item.type %>
+                  </span>
                 </div>
               </div>
-              
-              <div class="flex gap-3 pt-2">
+
+              <div class="flex gap-4 pt-2">
                 <%= if @selected_item.type in [:weapon, :armor] do %>
-                  <button 
-                    phx-click="equip" 
-                    phx-value-name={@selected_item.name} 
+                  <button
+                    phx-click="equip"
+                    phx-value-name={@selected_item.name}
                     phx-value-slot={get_ideal_slot(@selected_item)}
-                    class="flex-1 py-2 bg-primary text-background font-headline text-sm hover:brightness-110 active:scale-95 transition-all"
+                    class="flex-1 py-3 bg-primary/10 border border-primary text-primary font-headline text-sm uppercase tracking-widest hover:bg-primary/20 hover:shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)] transition-all"
                   >
                     Экипировать
                   </button>
                 <% end %>
-                <button phx-click="close_modal" class="flex-1 py-2 border border-border/50 text-foreground/70 hover:bg-foreground/5 font-headline text-sm transition-all">
-                  Закрыть
+                <button
+                  phx-click="close_modal"
+                  class="flex-1 py-3 border border-border/50 text-foreground/60 font-headline text-sm uppercase tracking-widest hover:text-foreground hover:bg-foreground/5 transition-all w-full"
+                >
+                  Вернуть в сумку
                 </button>
               </div>
             </div>
@@ -187,35 +295,59 @@ defmodule GodvilleSkWeb.EquipmentLive do
   end
 
   def equipment_slot(assigns) do
-    item_name = (Map.get(assigns.hero_state, :equipment) || %{})[assigns.slot]
+    item_name = Map.get(assigns.hero_state.equipment, assigns.slot)
     assigns = assign(assigns, :item_name, item_name)
+
     ~H"""
-    <div 
+    <div
       class={[
-        "w-14 h-14 rounded border flex items-center justify-center relative transition-all group",
-        @item_name && "border-primary/60 bg-primary/10 shadow-[0_0_10px_rgba(var(--primary-rgb),0.2)]",
-        !@item_name && "border-border/20 bg-background/40"
+        "w-16 h-16 border-[1.5px] flex items-center justify-center relative transition-all group",
+        @item_name &&
+          "border-primary/80 bg-primary/10 shadow-[inset_0_0_15px_rgba(var(--primary-rgb),0.1)]",
+        !@item_name && "border-border/40 bg-background/60 border-dashed"
       ]}
       title={@item_name || "Свободный слот"}
     >
+      <!-- Corner Accents -->
+      <div class="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-primary/40 pointer-events-none">
+      </div>
+      <div class="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-primary/40 pointer-events-none">
+      </div>
+
       <%= if @item_name do %>
-        <div class="text-primary animate-in fade-in duration-500">
-           <svg class="w-8 h-8 opacity-40 absolute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d={@icon} /></svg>
-           <span class="text-[8px] font-bold text-center relative z-10 px-1 truncate w-12"><%= @item_name %></span>
+        <div class="text-primary animate-in fade-in duration-500 w-full h-full flex items-center justify-center relative">
+          <svg
+            class="w-8 h-8 opacity-20 absolute"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path d={@icon} />
+          </svg>
+          <span class="text-[9px] font-headline tracking-widest text-center relative z-10 px-1 truncate w-14 leading-tight uppercase">
+            <%= @item_name %>
+          </span>
         </div>
-        <button 
-          phx-click="unequip" 
+        <button
+          phx-click="unequip"
           phx-value-slot={@slot}
-          class="absolute -top-1 -right-1 bg-red-500 text-white w-4 h-4 rounded-full text-[8px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+          class="absolute -top-2 -right-2 bg-red-900 border border-red-500 text-white w-5 h-5 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-700"
         >
           ×
         </button>
       <% else %>
-        <svg class="w-6 h-6 text-foreground/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg
+          class="w-6 h-6 text-foreground/20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+        >
           <path d={@icon} />
         </svg>
       <% end %>
-      <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-foreground/30 font-headline uppercase whitespace-nowrap">
+      <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] text-foreground/40 font-headline uppercase whitespace-nowrap tracking-widest bg-background/80 px-1 border-x border-border/50">
         <%= slot_name(@slot) %>
       </div>
     </div>
@@ -237,6 +369,7 @@ defmodule GodvilleSkWeb.EquipmentLive do
 
   defp get_ideal_slot(%{type: :weapon}), do: "weapon"
   defp get_ideal_slot(%{type: :armor, slot: slot}), do: to_string(slot)
-  defp get_ideal_slot(%{type: :armor}), do: "torso" # Default
+  # Default
+  defp get_ideal_slot(%{type: :armor}), do: "torso"
   defp get_ideal_slot(_), do: "weapon"
 end
