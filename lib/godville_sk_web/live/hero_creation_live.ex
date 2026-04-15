@@ -9,7 +9,13 @@ defmodule GodvilleSkWeb.HeroCreationLive do
       <div class="max-w-3xl w-full">
         <div class="flex items-center justify-center mb-8">
           <div class="h-px bg-border/30 flex-1"></div>
-          <svg class="w-8 h-8 mx-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg
+            class="w-8 h-8 mx-4 text-primary/60"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
           <div class="h-px bg-border/30 flex-1"></div>
@@ -18,8 +24,10 @@ defmodule GodvilleSkWeb.HeroCreationLive do
         <div class="bg-card border border-border/50 shadow-2xl p-8 md:p-12 relative overflow-hidden">
           <div class="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 border-primary/20"></div>
           <div class="absolute top-0 right-0 w-24 h-24 border-r-2 border-t-2 border-primary/20"></div>
-          <div class="absolute bottom-0 left-0 w-24 h-24 border-l-2 border-b-2 border-primary/20"></div>
-          <div class="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-primary/20"></div>
+          <div class="absolute bottom-0 left-0 w-24 h-24 border-l-2 border-b-2 border-primary/20">
+          </div>
+          <div class="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-primary/20">
+          </div>
 
           <div class="relative z-10">
             <h1 class="font-headline text-3xl md:text-5xl text-center text-primary mb-3 tracking-wider">
@@ -33,9 +41,17 @@ defmodule GodvilleSkWeb.HeroCreationLive do
               <div class="h-px bg-primary/40 w-20"></div>
             </div>
 
-            <.form for={@form} id="hero_creation_form" phx-submit="save" class="space-y-8 max-w-xl mx-auto">
+            <.form
+              for={@form}
+              id="hero_creation_form"
+              phx-submit="save"
+              class="space-y-8 max-w-xl mx-auto"
+            >
               <div>
-                <label for="hero-name" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
+                <label
+                  for="hero-name"
+                  class="font-headline block text-lg text-primary/90 mb-3 tracking-wide"
+                >
                   Имя героя
                 </label>
                 <.input
@@ -49,7 +65,10 @@ defmodule GodvilleSkWeb.HeroCreationLive do
               </div>
 
               <div>
-                <label for="hero-race" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
+                <label
+                  for="hero-race"
+                  class="font-headline block text-lg text-primary/90 mb-3 tracking-wide"
+                >
                   Раса
                 </label>
                 <div class="relative">
@@ -57,19 +76,39 @@ defmodule GodvilleSkWeb.HeroCreationLive do
                     field={@form[:race]}
                     type="select"
                     id="hero-race"
-                    options={["Имперец", "Норд", "Бретонец", "Редгард", "Альтмер", "Босмер", "Данмер", "Орсимер", "Каджит", "Аргонианин"]}
+                    options={[
+                      "Имперец",
+                      "Норд",
+                      "Бретонец",
+                      "Редгард",
+                      "Альтмер",
+                      "Босмер",
+                      "Данмер",
+                      "Орсимер",
+                      "Каджит",
+                      "Аргонианин"
+                    ]}
                     prompt="Выбери расу..."
                     required
                     class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none appearance-none cursor-pointer"
                   />
-                  <svg class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M6 9L12 15L18 9" />
                   </svg>
                 </div>
               </div>
 
               <div>
-                <label for="hero-class" class="font-headline block text-lg text-primary/90 mb-3 tracking-wide">
+                <label
+                  for="hero-class"
+                  class="font-headline block text-lg text-primary/90 mb-3 tracking-wide"
+                >
                   Класс
                 </label>
                 <div class="relative">
@@ -82,13 +121,22 @@ defmodule GodvilleSkWeb.HeroCreationLive do
                     required
                     class="font-body w-full px-4 py-3 bg-background/50 border-2 border-border/50 text-foreground focus:border-primary focus:outline-none appearance-none cursor-pointer"
                   />
-                  <svg class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    class="absolute right-4 top-[2.2rem] -translate-y-1/2 w-5 h-5 text-primary/60 pointer-events-none"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M6 9L12 15L18 9" />
                   </svg>
                 </div>
               </div>
 
-              <div :if={@error} class="p-3 bg-destructive/20 border border-destructive/50 text-destructive-foreground text-sm font-body">
+              <div
+                :if={@error}
+                class="p-3 bg-destructive/20 border border-destructive/50 text-destructive-foreground text-sm font-body"
+              >
                 {@error}
               </div>
 
@@ -115,6 +163,7 @@ defmodule GodvilleSkWeb.HeroCreationLive do
     case Game.get_hero_by_user_id(user.id) do
       nil ->
         {:ok, assign(socket, form: to_form(%{}, as: "hero"), error: nil)}
+
       _hero ->
         {:ok, push_navigate(socket, to: ~p"/dashboard")}
     end

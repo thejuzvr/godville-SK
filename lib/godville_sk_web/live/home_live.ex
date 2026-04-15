@@ -74,12 +74,16 @@ defmodule GodvilleSkWeb.HomeLive do
     <div class="min-h-screen bg-background text-foreground">
       <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
         <div class="relative hidden lg:block">
-          <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-80"></div>
-          <div class="absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-background"></div>
+          <div class="absolute inset-0 bg-[url('/images/login-bg2.jpg')] bg-cover bg-center opacity-80">
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-background">
+          </div>
 
           <div class="relative z-10 h-full p-10 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-primary font-headline tracking-wider">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/30">E</span>
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/30">
+                E
+              </span>
               <span>ElderScrollsIdle</span>
             </div>
 
@@ -95,7 +99,9 @@ defmodule GodvilleSkWeb.HomeLive do
         <div class="flex items-center justify-center p-6 lg:p-10">
           <div class="w-full max-w-md">
             <div class="text-center mb-6">
-              <h1 class="font-headline text-3xl text-primary tracking-wide">Добро пожаловать, странник</h1>
+              <h1 class="font-headline text-3xl text-primary tracking-wide">
+                Добро пожаловать, странник
+              </h1>
               <p class="mt-2 text-sm text-foreground/60 font-body">
                 Ваша эпическая история начинается здесь. Войдите или создайте своего героя.
               </p>
@@ -130,28 +136,43 @@ defmodule GodvilleSkWeb.HomeLive do
               </div>
 
               <div :if={@tab == :login}>
-                <.form for={@login_form} id="login_form" action={~p"/users/log_in"} phx-update="ignore" class="space-y-4">
+                <.form
+                  for={@login_form}
+                  id="login_form"
+                  action={~p"/users/log_in"}
+                  phx-update="ignore"
+                  class="space-y-4"
+                >
                   <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Электронная почта</label>
+                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">
+                      Электронная почта
+                    </label>
                     <.input field={@login_form[:email]} type="email" required class="w-full" />
                   </div>
 
                   <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Пароль</label>
+                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">
+                      Пароль
+                    </label>
                     <.input field={@login_form[:password]} type="password" required class="w-full" />
                   </div>
 
                   <div class="flex items-center justify-between">
                     <label class="flex items-center gap-2 text-xs text-foreground/60">
-                      <.input field={@login_form[:remember_me]} type="checkbox" />
-                      Запомнить меня
+                      <.input field={@login_form[:remember_me]} type="checkbox" /> Запомнить меня
                     </label>
-                    <.link href={~p"/users/reset_password"} class="text-xs text-primary underline hover:text-primary/80">
+                    <.link
+                      href={~p"/users/reset_password"}
+                      class="text-xs text-primary underline hover:text-primary/80"
+                    >
                       Забыли пароль?
                     </.link>
                   </div>
 
-                  <button type="submit" class="w-full px-4 py-2 bg-primary text-primary-foreground font-headline tracking-wide">
+                  <button
+                    type="submit"
+                    class="w-full px-4 py-2 bg-primary text-primary-foreground font-headline tracking-wide"
+                  >
                     Войти
                   </button>
                 </.form>
@@ -173,12 +194,16 @@ defmodule GodvilleSkWeb.HomeLive do
                   </.error>
 
                   <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Электронная почта</label>
+                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">
+                      Электронная почта
+                    </label>
                     <.input field={@register_form[:email]} type="email" required class="w-full" />
                   </div>
 
                   <div>
-                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">Пароль</label>
+                    <label class="block text-xs text-foreground/70 font-headline tracking-wide mb-1">
+                      Пароль
+                    </label>
                     <.input field={@register_form[:password]} type="password" required class="w-full" />
                   </div>
 
@@ -199,4 +224,3 @@ defmodule GodvilleSkWeb.HomeLive do
     """
   end
 end
-

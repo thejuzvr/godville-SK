@@ -16,7 +16,7 @@ defmodule GodvilleSk.MixProject do
   def application do
     [
       mod: {GodvilleSk.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :finch]
     ]
   end
 
@@ -36,6 +36,7 @@ defmodule GodvilleSk.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.0"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
+      {:finch, "~> 0.13"},
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},

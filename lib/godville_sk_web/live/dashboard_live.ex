@@ -17,10 +17,8 @@ defmodule GodvilleSkWeb.DashboardLive do
     <div class="flex flex-col h-screen overflow-hidden bg-background">
       <!-- Top Nav -->
       <.game_nav active_tab={:dashboard} />
-
       <!-- Main 3-column layout -->
       <div class="flex flex-1 overflow-hidden">
-
         <!-- LEFT SIDEBAR: Hero info -->
         <aside class="w-64 flex-shrink-0 bg-card border-r border-border overflow-y-auto">
           <div class="p-3 space-y-3">
@@ -32,10 +30,20 @@ defmodule GodvilleSkWeb.DashboardLive do
                 </span>
               </div>
               <div class="min-w-0">
-                <div class="font-headline text-primary text-sm leading-tight truncate"><%= @hero.name %></div>
-                <div class="text-foreground/60 text-xs mt-0.5">Уровень <%= @hero_state.level %> · <%= @hero.race %></div>
+                <div class="font-headline text-primary text-sm leading-tight truncate">
+                  <%= @hero.name %>
+                </div>
+                <div class="text-foreground/60 text-xs mt-0.5">
+                  Уровень <%= @hero_state.level %> · <%= @hero.race %>
+                </div>
                 <div class="flex items-center gap-1 mt-1">
-                  <svg class="w-3 h-3 text-foreground/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    class="w-3 h-3 text-foreground/40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                   </svg>
                   <span class="text-xs text-foreground/60"><%= @hero_state.location %></span>
@@ -43,14 +51,29 @@ defmodule GodvilleSkWeb.DashboardLive do
                 <div class="text-xs text-foreground/50 mt-0.5">Нейтральное</div>
               </div>
             </div>
-
             <!-- Status badge -->
             <div class="text-center">
               <span class={"text-xs font-body px-2 py-0.5 rounded #{status_class(@hero_state.status)}"}>
                 <%= status_text(@hero_state.status) %>
               </span>
+              <%= if @hero_state.status == :questing && @hero_state.target do %>
+                <div class="mt-2 px-2">
+                  <div class="text-xs text-foreground/70 font-headline truncate">
+                    <%= @hero_state.target.name %>
+                  </div>
+                  <div class="w-full h-2 bg-background/50 rounded-full overflow-hidden mt-1 border border-primary/20">
+                    <div
+                      class="h-full bg-primary transition-all duration-300"
+                      style={"width: #{quest_progress_pct(@hero_state.quest_progress, @hero_state.target.steps)}%"}
+                    >
+                    </div>
+                  </div>
+                  <div class="text-xs text-foreground/40 mt-0.5">
+                    <%= @hero_state.quest_progress %> / <%= @hero_state.target.steps %>
+                  </div>
+                </div>
+              <% end %>
             </div>
-
             <!-- HP / Mana / Stamina bars -->
             <div class="space-y-2">
               <!-- HP -->
@@ -65,7 +88,11 @@ defmodule GodvilleSkWeb.DashboardLive do
                   <span><%= @hero_state.hp %> / <%= @hero_state.max_hp %></span>
                 </div>
                 <div class="w-full h-2 bg-background/60 rounded-full overflow-hidden">
-                  <div class="h-full bg-red-500 transition-all duration-500" style={"width: #{hp_pct(@hero_state.hp, @hero_state.max_hp)}%"}></div>
+                  <div
+                    class="h-full bg-red-500 transition-all duration-500"
+                    style={"width: #{hp_pct(@hero_state.hp, @hero_state.max_hp)}%"}
+                  >
+                  </div>
                 </div>
               </div>
               <!-- Mana -->
@@ -95,11 +122,14 @@ defmodule GodvilleSkWeb.DashboardLive do
                   <span><%= round(@hero_state.stamina) %> / <%= @hero_state.stamina_max %></span>
                 </div>
                 <div class="w-full h-2 bg-background/60 rounded-full overflow-hidden">
-                  <div class="h-full bg-green-500 transition-all duration-500" style={"width: #{hp_pct(@hero_state.stamina, @hero_state.stamina_max)}%"}></div>
+                  <div
+                    class="h-full bg-green-500 transition-all duration-500"
+                    style={"width: #{hp_pct(@hero_state.stamina, @hero_state.stamina_max)}%"}
+                  >
+                  </div>
                 </div>
               </div>
             </div>
-
             <!-- Gold / Deaths -->
             <div class="grid grid-cols-2 gap-2 border-t border-border/50 pt-3">
               <div class="flex items-center gap-1.5">
@@ -112,34 +142,50 @@ defmodule GodvilleSkWeb.DashboardLive do
                 </div>
               </div>
               <div class="flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-foreground/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3.5 h-3.5 text-foreground/40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M12 2L2 7v5c0 5.25 4.25 10.15 10 11.25" />
                   <path d="M12 22s7-4 7-10V7l-7-5" stroke-dasharray="4 2" />
                 </svg>
                 <div>
                   <div class="text-xs text-foreground/50">Смертей</div>
-                  <div class="text-sm font-headline text-foreground/70"><%= (Map.get(@hero_state, :statistics) || %{})[:total_deaths] || 0 %></div>
+                  <div class="text-sm font-headline text-foreground/70">
+                    <%= (Map.get(@hero_state, :statistics) || %{})[:total_deaths] || 0 %>
+                  </div>
                 </div>
               </div>
             </div>
-
             <!-- Equipment -->
             <div class="border-t border-border/50 pt-3">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-headline text-foreground/70 tracking-wide">Снаряжение</span>
-                <span class="text-xs text-foreground/50">Броня: 5</span>
+                <span class="text-xs text-foreground/50">
+                  Атака: <%= calc_attack_class(@hero_state) %> | Защита: <%= @hero_state.ac %>
+                </span>
               </div>
               <div class="space-y-1">
                 <% slots = [
-                  {:weapon, "Оружие"}, {:head, "Голова"}, {:torso, "Торс"}, 
-                  {:legs, "Поножи"}, {:arms, "Руки"}, {:boots, "Ботинки"}, 
-                  {:amulet, "Амулет"}, {:ring, "Кольцо"}
+                  {:weapon, "Оружие"},
+                  {:head, "Голова"},
+                  {:torso, "Торс"},
+                  {:legs, "Поножи"},
+                  {:arms, "Руки"},
+                  {:boots, "Ботинки"},
+                  {:amulet, "Амулет"},
+                  {:ring, "Кольцо"}
                 ] %>
                 <%= for {slot_id, slot_label} <- slots do %>
                   <div class="flex justify-between items-center text-xs py-0.5">
                     <span class="text-foreground/60"><%= slot_label %></span>
                     <%= if item = (Map.get(@hero_state, :equipment) || %{})[slot_id] do %>
-                      <span class="text-primary truncate max-w-[100px]" title={item}><%= item %></span>
+                      <span class="text-primary truncate max-w-[100px]" title={item}>
+                        <%= item %>
+                      </span>
                     <% else %>
                       <span class="text-foreground/30 italic">Пусто</span>
                     <% end %>
@@ -147,122 +193,255 @@ defmodule GodvilleSkWeb.DashboardLive do
                 <% end %>
               </div>
             </div>
-
             <!-- Companion -->
             <div class="border-t border-border/50 pt-3">
               <div class="flex items-center gap-2 mb-2">
-                <svg class="w-3 h-3 text-foreground/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3 h-3 text-foreground/40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
                 </svg>
-                <span class="text-xs font-headline text-foreground/70 tracking-wide">Активный Компаньон</span>
+                <span class="text-xs font-headline text-foreground/70 tracking-wide">
+                  Активный Компаньон
+                </span>
               </div>
               <div class="text-xs text-foreground/30 italic text-center py-2">Нет компаньона</div>
             </div>
           </div>
         </aside>
-
         <!-- CENTER: Adventure Journal -->
         <main class="flex-1 flex flex-col overflow-hidden border-r border-border">
-
           <!-- ENEMY COMBAT ARENA -->
-          <div :if={@hero_state.status in [:combat, :combat_initiative, :combat_round] && @hero_state.target} class="flex-shrink-0 bg-background border-b border-border p-4 relative overflow-hidden flex flex-col" style="height: 300px;">
-             <!-- Subtle glow/vignette -->
-             <div class="absolute inset-0 bg-red-900/10 pointer-events-none"></div>
-             <!-- Top header VS -->
-             <div class="flex justify-between items-center z-10 w-full mb-2">
-               <!-- Hero -->
-               <div class="w-5/12 flex flex-col gap-1 items-start">
-                 <div class="font-headline text-lg text-primary truncate w-full"><%= @hero.name %></div>
-                 <div class="flex w-full h-3 bg-background/50 rounded overflow-hidden shadow-inner border border-primary/20">
-                   <div class="h-full bg-red-500 transition-all duration-500" style={"width: #{hp_pct(@hero_state.hp, @hero_state.max_hp)}%"}></div>
-                 </div>
-                 <span class="text-xs text-foreground/50"><%= max(0, @hero_state.hp) %> / <%= @hero_state.max_hp %> HP</span>
-               </div>
-               
-               <!-- Center -->
-               <div class="font-headline text-2xl text-red-500/50 tracking-widest px-2">
-                 VS
-               </div>
-               
-               <!-- Target -->
-               <% target_max_hp = Map.get(@hero_state.target, :max_hp) || 100 %>
-               <div class="w-5/12 flex flex-col gap-1 items-end text-right">
-                 <div class="font-headline text-lg text-red-500 truncate w-full"><%= @hero_state.target.name %></div>
-                 <div class="flex w-full h-3 bg-background/50 rounded overflow-hidden shadow-inner border border-red-500/20 transform rotate-180">
-                   <div class="h-full bg-red-600 transition-all duration-500" style={"width: #{hp_pct(@hero_state.target.hp, target_max_hp)}%"}></div>
-                 </div>
-                 <span class="text-xs text-foreground/50"><%= max(0, @hero_state.target.hp) %> / <%= target_max_hp %> HP</span>
-               </div>
-             </div>
-             
-             <!-- 3D D20 Dice Container -->
-             <div class="flex-1 flex items-center justify-center relative w-full h-full">
-                <!-- hook will inject into this element -->
-                <div id="d20-combat" phx-hook="DiceRollerHook" data-theme={@current_user.dice_theme} class="d20-container" phx-update="ignore"></div>
-             </div>
+          <div
+            :if={
+              @hero_state.status in [:combat, :combat_initiative, :combat_round] && @hero_state.target
+            }
+            class="flex-shrink-0 bg-background border-b border-border p-4 relative overflow-hidden flex flex-col"
+            style="height: 300px;"
+          >
+            <!-- Subtle glow/vignette -->
+            <div class="absolute inset-0 bg-red-900/10 pointer-events-none"></div>
+            <!-- Top header VS -->
+            <div class="flex justify-between items-center z-10 w-full mb-2">
+              <!-- Hero -->
+              <div class="w-5/12 flex flex-col gap-1 items-start">
+                <div class="font-headline text-lg text-primary truncate w-full">
+                  <%= @hero.name %>
+                </div>
+                <div class="flex w-full h-3 bg-background/50 rounded overflow-hidden shadow-inner border border-primary/20">
+                  <div
+                    class="h-full bg-red-500 transition-all duration-500"
+                    style={"width: #{hp_pct(@hero_state.hp, @hero_state.max_hp)}%"}
+                  >
+                  </div>
+                </div>
+                <span class="text-xs text-foreground/50">
+                  <%= max(0, @hero_state.hp) %> / <%= @hero_state.max_hp %> HP
+                </span>
+              </div>
+              <!-- Center -->
+              <div class="font-headline text-2xl text-red-500/50 tracking-widest px-2">
+                VS
+              </div>
+              <!-- Target -->
+              <% target_max_hp = Map.get(@hero_state.target, :max_hp) || 100 %>
+              <div class="w-5/12 flex flex-col gap-1 items-end text-right">
+                <div class="font-headline text-lg text-red-500 truncate w-full">
+                  <%= @hero_state.target.name %>
+                </div>
+                <div class="flex w-full h-3 bg-background/50 rounded overflow-hidden shadow-inner border border-red-500/20 transform rotate-180">
+                  <div
+                    class="h-full bg-red-600 transition-all duration-500"
+                    style={"width: #{hp_pct(@hero_state.target.hp, target_max_hp)}%"}
+                  >
+                  </div>
+                </div>
+                <span class="text-xs text-foreground/50">
+                  <%= max(0, @hero_state.target.hp) %> / <%= target_max_hp %> HP
+                </span>
+              </div>
+            </div>
+            <!-- 3D D20 Dice Container -->
+            <div class="flex-1 flex items-center justify-center relative w-full h-full">
+              <!-- hook will inject into this element -->
+              <div
+                id="d20-combat"
+                phx-hook="DiceRollerHook"
+                data-theme={@current_user.dice_theme}
+                class="d20-container"
+                phx-update="ignore"
+              >
+              </div>
+            </div>
           </div>
-
+          <!-- Quest Progress Panel -->
+          <%= if @hero_state.status == :questing && @hero_state.target && !is_combat_status(@hero_state.status) do %>
+            <div class="flex-shrink-0 bg-primary/5 border-b border-primary/20 p-3">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <svg
+                    class="w-4 h-4 text-primary"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                  </svg>
+                  <span class="text-xs font-headline text-primary tracking-wide">
+                    <%= case @hero_state.target.type do
+                      :bounty -> "Охота"
+                      :delivery -> "Доставка"
+                      :gathering -> "Сбор"
+                      :dungeon -> "Подземелье"
+                      _ -> "Задание"
+                    end %>
+                  </span>
+                </div>
+                <span class="text-xs text-foreground/40 font-body">
+                  Этап <%= @hero_state.quest_progress %> / <%= @hero_state.target.steps %>
+                </span>
+              </div>
+              <div class="font-headline text-sm text-foreground/80 truncate mb-2">
+                <%= @hero_state.target.name %>
+              </div>
+              <div class="w-full h-2.5 bg-background/60 rounded-full overflow-hidden border border-primary/20">
+                <div
+                  class="h-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-500"
+                  style={"width: #{quest_progress_pct(@hero_state.quest_progress, @hero_state.target.steps)}%"}
+                >
+                </div>
+              </div>
+              <div class="flex justify-between mt-1.5 text-[10px] text-foreground/30">
+                <span>Начато</span>
+                <span>Выполняется</span>
+                <span>Завершено</span>
+              </div>
+            </div>
+          <% end %>
           <!-- Journal header -->
           <div class="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-border bg-card/50">
             <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="w-4 h-4 text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 014 17V4h16v13H6.5A2.5 2.5 0 004 19.5z" />
               </svg>
               <h2 class="font-headline text-sm tracking-wide text-foreground">Журнал приключений</h2>
             </div>
-            <span class="text-xs text-foreground/40 font-body">Хроника путешествий, мыслей и деяний вашего героя.</span>
+            <div class="flex items-center gap-1">
+              <button
+                phx-click="switch_journal_tab"
+                phx-value-tab="journal"
+                class={"text-xs px-2 py-1 rounded font-body transition-colors #{if @journal_tab == :journal, do: "bg-primary/20 text-primary", else: "text-foreground/50 hover:text-foreground/80"}"}
+              >
+                Журнал
+              </button>
+              <button
+                phx-click="switch_journal_tab"
+                phx-value-tab="battle_keeper"
+                class={"text-xs px-2 py-1 rounded font-body transition-colors #{if @journal_tab == :battle_keeper, do: "bg-primary/20 text-primary", else: "text-foreground/50 hover:text-foreground/80"}"}
+              >
+                Хранитель боя
+              </button>
+            </div>
           </div>
-
           <!-- Log entries -->
           <div class="flex-1 overflow-y-auto p-4 space-y-1.5 font-body text-sm">
-            <%= for entry <- normal_logs(assigns) do %>
-              <div class="flex gap-2 text-foreground/80 leading-relaxed">
-                <span class="text-primary/60 font-headline text-xs flex-shrink-0 mt-0.5 w-12">
-                  <%= format_game_time(entry.game_time || @game_time) %>
-                </span>
-                <span><%= entry.message %></span>
-              </div>
+            <%= if @journal_tab == :battle_keeper do %>
+              <%= if length(battle_logs(assigns)) > 0 do %>
+                <%= for entry <- battle_logs(assigns) do %>
+                  <div class="flex gap-2 text-foreground/80 leading-relaxed">
+                    <span class="text-primary/60 font-headline text-xs flex-shrink-0 mt-0.5 w-12">
+                      <%= format_game_time(entry.game_time || @game_time) %>
+                    </span>
+                    <span><%= entry.message %></span>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="text-foreground/40 text-xs text-center py-4">
+                  Бой не обнаружен. Вступите в бой, чтобы увидеть броски.
+                </div>
+              <% end %>
+            <% else %>
+              <%= for entry <- normal_logs(assigns) do %>
+                <div class="flex gap-2 text-foreground/80 leading-relaxed">
+                  <span class="text-primary/60 font-headline text-xs flex-shrink-0 mt-0.5 w-12">
+                    <%= format_game_time(entry.game_time || @game_time) %>
+                  </span>
+                  <span><%= entry.message %></span>
+                </div>
+              <% end %>
             <% end %>
           </div>
-
           <!-- XP bar at the bottom -->
           <div class="flex-shrink-0 border-t border-border px-4 py-2 bg-card/30">
             <div class="flex items-center gap-2">
               <span class="text-xs text-foreground/50 font-body">Опыт</span>
               <div class="flex-1 h-1.5 bg-background/60 rounded-full overflow-hidden">
-                <div class="h-full bg-primary/60 transition-all" style={"width: #{xp_pct(@hero_state.xp, @hero_state.level)}%"}></div>
+                <div
+                  class="h-full bg-primary/60 transition-all"
+                  style={"width: #{xp_pct(@hero_state.xp, @hero_state.level)}%"}
+                >
+                </div>
               </div>
-              <span class="text-xs text-foreground/50 font-body"><%= @hero_state.xp %> / <%= @hero_state.level * 100 %></span>
+              <span class="text-xs text-foreground/50 font-body">
+                <%= @hero_state.xp %> / <%= @hero_state.level * 100 %>
+              </span>
             </div>
           </div>
         </main>
-
         <!-- RIGHT SIDEBAR: Time & Intervention -->
         <aside class="w-64 flex-shrink-0 overflow-y-auto bg-card">
           <div class="p-3 space-y-3">
             <!-- Game Time -->
             <div class="bg-background/40 border border-border/50 p-3">
               <div class="flex items-center gap-1.5 mb-2">
-                <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3.5 h-3.5 text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                 </svg>
-                <span class="text-xs font-headline text-foreground/80 tracking-wide">Игровое время</span>
+                <span class="text-xs font-headline text-foreground/80 tracking-wide">
+                  Игровое время
+                </span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-xs text-foreground/60 font-body">
                   <%= @game_time.day_name %>, <%= @game_time.day %>-й день <%= @game_time.month %>, 4Э <%= @game_time.year %>
                 </span>
-                <span class="text-xs font-headline text-primary"><%= format_game_time(@game_time) %></span>
+                <span class="text-xs font-headline text-primary">
+                  <%= format_game_time(@game_time) %>
+                </span>
               </div>
             </div>
-
             <!-- Real Time -->
             <div class="bg-background/40 border border-border/50 p-3">
               <div class="flex items-center gap-1.5 mb-2">
-                <svg class="w-3.5 h-3.5 text-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3.5 h-3.5 text-foreground/50"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
-                <span class="text-xs font-headline text-foreground/80 tracking-wide">Реальное время</span>
+                <span class="text-xs font-headline text-foreground/80 tracking-wide">
+                  Реальное время
+                </span>
               </div>
               <div
                 id="local-clock"
@@ -270,18 +449,29 @@ defmodule GodvilleSkWeb.DashboardLive do
                 data-utc={DateTime.to_iso8601(@real_time)}
                 class="flex justify-between items-center"
               >
-                <span data-role="date" class="text-xs text-foreground/60 font-body"><%= format_real_date(@real_time) %></span>
-                <span data-role="time" class="text-xs font-headline text-foreground/70"><%= format_real_time(@real_time) %></span>
+                <span data-role="date" class="text-xs text-foreground/60 font-body">
+                  <%= format_real_date(@real_time) %>
+                </span>
+                <span data-role="time" class="text-xs font-headline text-foreground/70">
+                  <%= format_real_time(@real_time) %>
+                </span>
               </div>
             </div>
-
             <!-- World Conditions -->
             <div class="bg-background/40 border border-border/50 p-3">
               <div class="flex items-center gap-1.5 mb-3">
-                <svg class="w-3.5 h-3.5 text-primary/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3.5 h-3.5 text-primary/70"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                 </svg>
-                <span class="text-xs font-headline text-foreground/80 tracking-wide">Мировые условия</span>
+                <span class="text-xs font-headline text-foreground/80 tracking-wide">
+                  Мировые условия
+                </span>
               </div>
               <div class="space-y-2 text-xs">
                 <div class="flex justify-between">
@@ -304,25 +494,36 @@ defmodule GodvilleSkWeb.DashboardLive do
                 </div>
               </div>
               <div class="mt-3 pt-2 border-t border-border/30">
-                <span :if={@hero_state.luck_modifier < 0} class="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 border border-red-500/20">
+                <span
+                  :if={@hero_state.luck_modifier < 0}
+                  class="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 border border-red-500/20"
+                >
                   Ослабленность (<%= @hero_state.luck_modifier %>)
                 </span>
-                <span :if={@hero_state.luck_modifier >= 0} class="text-xs text-foreground/40">Активные эффекты: нет</span>
+                <span :if={@hero_state.luck_modifier >= 0} class="text-xs text-foreground/40">
+                  Активные эффекты: нет
+                </span>
               </div>
             </div>
-
             <!-- Intervention Panel -->
             <div class="bg-background/40 border border-border/50 p-3">
               <div class="flex items-center gap-1.5 mb-3">
-                <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  class="w-3.5 h-3.5 text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                 </svg>
-                <span class="text-xs font-headline text-foreground/80 tracking-wide">Пульт Вмешательства</span>
+                <span class="text-xs font-headline text-foreground/80 tracking-wide">
+                  Пульт Вмешательства
+                </span>
               </div>
               <p class="text-xs text-foreground/50 font-body mb-3 leading-relaxed">
                 Направляйте своего героя или просто наблюдайте. Каждое действие тратит 50 ед. силы.
               </p>
-
               <!-- Intervention power bar -->
               <div class="mb-3">
                 <div class="flex justify-between text-xs text-foreground/60 mb-1">
@@ -330,11 +531,14 @@ defmodule GodvilleSkWeb.DashboardLive do
                   <span><%= @hero_state.intervention_power %> / 100</span>
                 </div>
                 <div class="w-full h-2 bg-background/60 rounded-full overflow-hidden">
-                  <div class="h-full bg-primary transition-all duration-500" style={"width: #{@hero_state.intervention_power}%"}></div>
+                  <div
+                    class="h-full bg-primary transition-all duration-500"
+                    style={"width: #{@hero_state.intervention_power}%"}
+                  >
+                  </div>
                 </div>
                 <div class="text-xs text-foreground/40 mt-1">Восполнение: ~30 ед. / мин</div>
               </div>
-
               <!-- Whisper form -->
               <.form for={@whisper_form} phx-submit="send_whisper">
                 <div class="mb-2">
@@ -346,7 +550,8 @@ defmodule GodvilleSkWeb.DashboardLive do
                     maxlength="200"
                     rows="2"
                     class="w-full px-2 py-1.5 text-xs bg-background/60 border border-border/50 text-foreground placeholder:text-foreground/30 focus:border-primary focus:outline-none resize-none font-body"
-                  ></textarea>
+                  >
+                  </textarea>
                 </div>
                 <button
                   type="submit"
@@ -375,15 +580,16 @@ defmodule GodvilleSkWeb.DashboardLive do
                   Наказать
                 </button>
               </div>
-
               <!-- Last sent whisper preview -->
-              <div :if={@last_whisper != ""} class="mt-2 p-2 bg-primary/10 border border-primary/20 text-xs text-foreground/70 font-body">
+              <div
+                :if={@last_whisper != ""}
+                class="mt-2 p-2 bg-primary/10 border border-primary/20 text-xs text-foreground/70 font-body"
+              >
                 <span class="text-primary">Последнее:</span> <%= @last_whisper %>
               </div>
             </div>
           </div>
         </aside>
-
       </div>
     </div>
     """
@@ -399,6 +605,14 @@ defmodule GodvilleSkWeb.DashboardLive do
       hero ->
         Game.ensure_hero_running(hero)
         hero_state = Game.get_hero_live_state(hero) || default_hero_state(hero)
+
+        # Convert embedded structs to maps for template rendering
+        hero_state = %{
+          hero_state
+          | equipment: Map.from_struct(hero_state.equipment),
+            statistics: Map.from_struct(hero_state.statistics),
+            temple: Map.from_struct(hero_state.temple)
+        }
 
         world = WorldClock.snapshot()
 
@@ -417,12 +631,21 @@ defmodule GodvilleSkWeb.DashboardLive do
          |> assign(:last_whisper, "")
          |> assign(:max_mana, calc_max_mana(hero_state))
          |> assign(:max_stamina, calc_max_stamina(hero_state))
-         |> assign(:whisper_form, to_form(%{}, as: "whisper"))}
+         |> assign(:whisper_form, to_form(%{}, as: "whisper"))
+         |> assign(:journal_tab, :journal)}
     end
   end
 
   def handle_info({:hero_update, hero_state}, socket) do
     old_logs = socket.assigns.hero_state.log
+
+    # Convert embedded structs to maps for template rendering
+    hero_state = %{
+      hero_state
+      | equipment: Map.from_struct(hero_state.equipment),
+        statistics: Map.from_struct(hero_state.statistics),
+        temple: Map.from_struct(hero_state.temple)
+    }
 
     new_logs =
       if Enum.empty?(old_logs) do
@@ -435,7 +658,7 @@ defmodule GodvilleSkWeb.DashboardLive do
     socket =
       Enum.reduce(Enum.reverse(new_logs), socket, fn log, acc ->
         meta = log.metadata || %{}
-        
+
         if meta[:type] == "combat_roll" do
           push_event(acc, "combat_roll", %{
             roll: meta[:roll] || 10,
@@ -471,7 +694,8 @@ defmodule GodvilleSkWeb.DashboardLive do
      |> assign(:game_time, world.game_time)}
   end
 
-  def handle_event("send_whisper", %{"whisper" => %{"text" => text}}, socket) when byte_size(text) > 0 do
+  def handle_event("send_whisper", %{"whisper" => %{"text" => text}}, socket)
+      when byte_size(text) > 0 do
     if socket.assigns.hero_state.intervention_power >= 50 do
       GodvilleSk.Hero.send_whisper(socket.assigns.hero.name, text)
       {:noreply, assign(socket, :last_whisper, String.slice(text, 0, 200))}
@@ -499,7 +723,8 @@ defmodule GodvilleSkWeb.DashboardLive do
   end
 
   def handle_event("divine_intervention", _params, socket) do
-    if socket.assigns.hero_state.status == :sovngarde and socket.assigns.hero_state.intervention_power >= 100 do
+    if socket.assigns.hero_state.status == :sovngarde and
+         socket.assigns.hero_state.intervention_power >= 100 do
       GodvilleSk.Hero.divine_intervention(socket.assigns.hero.name)
       {:noreply, socket}
     else
@@ -511,11 +736,19 @@ defmodule GodvilleSkWeb.DashboardLive do
     {:noreply, socket}
   end
 
+  def handle_event("switch_journal_tab", %{"tab" => tab}, socket) do
+    journal_tab = String.to_existing_atom(tab)
+    {:noreply, assign(socket, :journal_tab, journal_tab)}
+  rescue
+    _ -> {:noreply, socket}
+  end
+
   # ---- Helpers ----
 
   defp default_hero_state(hero) do
     attrs = hero.attributes || %{}
-    %GodvilleSk.Hero{
+
+    hero_state = %GodvilleSk.Hero{
       id: hero.id,
       name: hero.name,
       race: hero.race,
@@ -535,6 +768,9 @@ defmodule GodvilleSkWeb.DashboardLive do
       personality: attrs["personality"] || 50,
       luck: attrs["luck"] || 50,
       location: "Винтерхолд",
+      equipment: GodvilleSk.Game.HeroEquipment.default(),
+      statistics: GodvilleSk.Game.HeroStatistics.default(),
+      temple: GodvilleSk.Game.HeroTemple.default(),
       log: [
         %{
           id: nil,
@@ -544,6 +780,14 @@ defmodule GodvilleSkWeb.DashboardLive do
           game_time: socket_world_game_time()
         }
       ]
+    }
+
+    # Convert embedded structs to maps for template rendering
+    %{
+      hero_state
+      | equipment: Map.from_struct(hero_state.equipment),
+        statistics: Map.from_struct(hero_state.statistics),
+        temple: Map.from_struct(hero_state.temple)
     }
   end
 
@@ -560,14 +804,47 @@ defmodule GodvilleSkWeb.DashboardLive do
     (hero_state.endurance + hero_state.speed) * 2
   end
 
+  defp calc_attack_class(hero_state) do
+    base = 10
+    level_bonus = hero_state.level
+    str_mod = div((hero_state.strength || 50) - 50, 10)
+
+    weapon_damage = get_weapon_damage(hero_state.equipment.weapon)
+
+    base + level_bonus + str_mod + weapon_damage
+  end
+
+  defp get_weapon_damage(nil), do: 0
+
+  defp get_weapon_damage(weapon_name) do
+    all_items = GodvilleSk.Game.Items.get_weapons() ++ GodvilleSk.GameData.items()
+
+    case Enum.find(all_items, fn item -> item.name == weapon_name end) do
+      nil -> 0
+      item -> item.value || 0
+    end
+  end
+
   defp hp_pct(hp, max_hp) when max_hp > 0, do: round(hp / max_hp * 100)
   defp hp_pct(_, _), do: 0
 
   defp xp_pct(xp, level) when level > 0, do: min(100, round(xp / (level * 100) * 100))
   defp xp_pct(_, _), do: 0
 
+  defp quest_progress_pct(progress, total) when total > 0,
+    do: min(100, round(progress / total * 100))
+
+  defp quest_progress_pct(_, _), do: 0
+
+  defp is_combat_status(:combat), do: true
+  defp is_combat_status(:combat_initiative), do: true
+  defp is_combat_status(:combat_round), do: true
+  defp is_combat_status(_), do: false
+
   defp status_text(:idle), do: "Бездействует"
   defp status_text(:combat), do: "В бою"
+  defp status_text(:combat_initiative), do: "Вступает в бой"
+  defp status_text(:combat_round), do: "В бою"
   defp status_text(:resting), do: "Отдыхает"
   defp status_text(:questing), do: "Выполняет квест"
   defp status_text(:fleeing), do: "Бежит"
@@ -578,13 +855,23 @@ defmodule GodvilleSkWeb.DashboardLive do
 
   defp status_class(:idle), do: "bg-foreground/10 text-foreground/60"
   defp status_class(:combat), do: "bg-red-500/20 text-red-400"
+  defp status_class(:combat_initiative), do: "bg-red-500/20 text-red-400"
+  defp status_class(:combat_round), do: "bg-red-500/20 text-red-400"
   defp status_class(:resting), do: "bg-blue-500/20 text-blue-400"
   defp status_class(:questing), do: "bg-primary/20 text-primary"
   defp status_class(:leveling_up), do: "bg-yellow-500/20 text-yellow-400"
-  defp status_class(:sovngarde), do: "bg-primary/30 text-primary animate-pulse shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"
+
+  defp status_class(:sovngarde),
+    do:
+      "bg-primary/30 text-primary animate-pulse shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"
+
   defp status_class(_), do: "bg-foreground/10 text-foreground/60"
 
   defp format_game_time(%{hour: h, minute: m}) do
+    "#{String.pad_leading(to_string(h), 2, "0")}:#{String.pad_leading(to_string(m), 2, "0")}"
+  end
+
+  defp format_game_time(%{"hour" => h, "minute" => m}) do
     "#{String.pad_leading(to_string(h), 2, "0")}:#{String.pad_leading(to_string(m), 2, "0")}"
   end
 
@@ -606,106 +893,149 @@ defmodule GodvilleSkWeb.DashboardLive do
     <div class="relative flex flex-col h-screen overflow-hidden bg-celestial text-white font-body">
       <!-- Background Text Effects (Whispers) -->
       <div class="absolute inset-0 pointer-events-none opacity-10 overflow-hidden">
-        <div class="absolute top-[10%] left-[5%] text-2xl font-headline floating-celestial" style="animation-delay: 1s">Шор наблюдает...</div>
-        <div class="absolute top-[40%] right-[10%] text-3xl font-headline floating-celestial" style="animation-delay: 2.5s">Валгалла ждет своих героев</div>
-        <div class="absolute bottom-[20%] left-[15%] text-xl font-headline floating-celestial" style="animation-delay: 0.5s">Смерть — лишь начало пути</div>
+        <div
+          class="absolute top-[10%] left-[5%] text-2xl font-headline floating-celestial"
+          style="animation-delay: 1s"
+        >
+          Шор наблюдает...
+        </div>
+        <div
+          class="absolute top-[40%] right-[10%] text-3xl font-headline floating-celestial"
+          style="animation-delay: 2.5s"
+        >
+          Валгалла ждет своих героев
+        </div>
+        <div
+          class="absolute bottom-[20%] left-[15%] text-xl font-headline floating-celestial"
+          style="animation-delay: 0.5s"
+        >
+          Смерть — лишь начало пути
+        </div>
       </div>
-
       <!-- Header / Nav -->
       <header class="flex-shrink-0 flex items-center justify-between px-8 py-4 glass-panel border-none z-20">
         <div class="flex items-center gap-4">
           <div class="w-10 h-10 rounded-full bg-blue-400/20 border border-blue-400/50 flex items-center justify-center animate-pulse">
-             <span class="text-blue-300">✨</span>
+            <span class="text-blue-300">✨</span>
           </div>
-          <h1 class="font-headline text-xl tracking-[0.2em] uppercase glow-text-celestial">Совнгард</h1>
+          <h1 class="font-headline text-xl tracking-[0.2em] uppercase glow-text-celestial">
+            Совнгард
+          </h1>
         </div>
         <.game_nav active_tab={:dashboard} theme="dark" />
       </header>
-
       <!-- Main Layout -->
       <main class="flex-1 flex gap-8 p-8 overflow-hidden z-10">
-        
         <!-- LEFT: Aether Clock & Status -->
         <div class="w-1/3 flex flex-col items-center justify-center space-y-8">
-           <div class="relative group">
-              <!-- Outer Ring -->
-              <div class="w-64 h-64 rounded-full border-4 border-blue-400/20 flex items-center justify-center relative overflow-hidden glass-panel">
-                <div class="absolute inset-0 bg-blue-500/5 animate-pulse"></div>
-                <!-- The Actual Timer Hook -->
-                <div 
-                  id="sovngarde-timer" 
-                  phx-hook="SovngardeTimer" 
-                  data-respawn-at={if @hero_state.respawn_at, do: DateTime.to_iso8601(@hero_state.respawn_at), else: ""}
-                  class="aether-clock text-6xl font-headline glow-text-celestial"
-                >
-                  00:00
-                </div>
-              </div>
-              <div class="mt-4 text-center">
-                <div class="text-blue-300/60 uppercase tracking-widest text-xs mb-1">До возвращения в Тамриэль</div>
-                <div class="text-sm font-headline opacity-80"><%= @hero_state.location %></div>
-              </div>
-           </div>
-
-           <!-- Death Intervention Panel -->
-           <div class="w-full max-w-sm p-6 glass-panel rounded-2xl space-y-4 floating-celestial">
-              <h3 class="font-headline text-sm tracking-widest uppercase text-blue-300 border-b border-white/10 pb-2">Пульт Высшего Вмешательства</h3>
-              <p class="text-xs opacity-50 leading-relaxed font-body">В этом измерении магия восстановления бессильна. Лишь воля богов может вернуть душу в бренное тело раньше срока.</p>
-              
-              <button 
-                type="button"
-                phx-click="divine_intervention"
-                disabled={@hero_state.intervention_power < 100}
-                class="w-full py-3 bg-blue-500/20 border border-blue-400/40 text-blue-300 font-headline uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all duration-500 disabled:opacity-30 flex flex-col items-center group overflow-hidden relative"
+          <div class="relative group">
+            <!-- Outer Ring -->
+            <div class="w-64 h-64 rounded-full border-4 border-blue-400/20 flex items-center justify-center relative overflow-hidden glass-panel">
+              <div class="absolute inset-0 bg-blue-500/5 animate-pulse"></div>
+              <!-- The Actual Timer Hook -->
+              <div
+                id="sovngarde-timer"
+                phx-hook="SovngardeTimer"
+                data-respawn-at={
+                  if @hero_state.respawn_at, do: DateTime.to_iso8601(@hero_state.respawn_at), else: ""
+                }
+                class="aether-clock text-6xl font-headline glow-text-celestial"
               >
-                <span class="relative z-10">Вмешательство в смерть</span>
-                <span :if={@hero_state.intervention_power < 100} class="text-[8px] opacity-40 group-hover:opacity-60">[ ЗАБЛОКИРОВАНО ]</span>
-                <span :if={@hero_state.intervention_power >= 100} class="text-[8px] opacity-80 group-hover:opacity-100 animate-pulse text-blue-400">[ ГОТОВО ]</span>
-                <div class="absolute inset-y-0 -left-full group-hover:left-full w-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-1000 skew-x-12"></div>
-              </button>
-              
-              <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 w-fit mx-auto">
-                 <div class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></div>
-                 <span class="text-[10px] uppercase tracking-tighter opacity-70">Связь с душой: Стабильна</span>
+                00:00
               </div>
-           </div>
-        </div>
+            </div>
+            <div class="mt-4 text-center">
+              <div class="text-blue-300/60 uppercase tracking-widest text-xs mb-1">
+                До возвращения в Тамриэль
+              </div>
+              <div class="text-sm font-headline opacity-80"><%= @hero_state.location %></div>
+            </div>
+          </div>
+          <!-- Death Intervention Panel -->
+          <div class="w-full max-w-sm p-6 glass-panel rounded-2xl space-y-4 floating-celestial">
+            <h3 class="font-headline text-sm tracking-widest uppercase text-blue-300 border-b border-white/10 pb-2">
+              Пульт Высшего Вмешательства
+            </h3>
+            <p class="text-xs opacity-50 leading-relaxed font-body">
+              В этом измерении магия восстановления бессильна. Лишь воля богов может вернуть душу в бренное тело раньше срока.
+            </p>
 
+            <button
+              type="button"
+              phx-click="divine_intervention"
+              disabled={@hero_state.intervention_power < 100}
+              class="w-full py-3 bg-blue-500/20 border border-blue-400/40 text-blue-300 font-headline uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all duration-500 disabled:opacity-30 flex flex-col items-center group overflow-hidden relative"
+            >
+              <span class="relative z-10">Вмешательство в смерть</span>
+              <span
+                :if={@hero_state.intervention_power < 100}
+                class="text-[8px] opacity-40 group-hover:opacity-60"
+              >
+                [ ЗАБЛОКИРОВАНО ]
+              </span>
+              <span
+                :if={@hero_state.intervention_power >= 100}
+                class="text-[8px] opacity-80 group-hover:opacity-100 animate-pulse text-blue-400"
+              >
+                [ ГОТОВО ]
+              </span>
+              <div class="absolute inset-y-0 -left-full group-hover:left-full w-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-1000 skew-x-12">
+              </div>
+            </button>
+
+            <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 w-fit mx-auto">
+              <div class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></div>
+              <span class="text-[10px] uppercase tracking-tighter opacity-70">
+                Связь с душой: Стабильна
+              </span>
+            </div>
+          </div>
+        </div>
         <!-- RIGHT: Whispers from Valor (Journal) -->
         <div class="flex-1 flex flex-col glass-panel rounded-3xl overflow-hidden shadow-2xl">
-           <div class="p-6 border-b border-white/10 flex justify-between items-end">
-              <div>
-                <h2 class="font-headline text-2xl tracking-wide glow-text-celestial">Шёпот Залов Доблести</h2>
-                <span class="text-xs opacity-40 uppercase tracking-widest">Посмертный журнал героя</span>
-              </div>
-              <div class="text-right">
-                <div class="text-sm font-headline text-blue-300"><%= @hero_state.hp %> / <%= @hero_state.max_hp %> HP</div>
-                <div class="text-[10px] opacity-30">МЕНТАЛЬНОЕ ВОССТАНОВЛЕНИЕ</div>
-              </div>
-           </div>
-           
-               <div class="flex-1 overflow-y-auto p-8 space-y-6">
-               <%= for entry <- sovngarde_logs(assigns) do %>
-                 <div class="flex gap-6 group">
-                    <div class="flex-shrink-0 w-1 pt-1">
-                       <div class="h-full w-full bg-gradient-to-b from-blue-400/50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div class="space-y-1">
-                       <div class="text-xs text-blue-300/40 font-headline"><%= format_game_time(entry.game_time || @game_time) %></div>
-                       <div class="text-lg font-light leading-relaxed text-blue-50/80 group-hover:text-white transition-colors"><%= entry.message %></div>
-                    </div>
-                 </div>
-               <% end %>
+          <div class="p-6 border-b border-white/10 flex justify-between items-end">
+            <div>
+              <h2 class="font-headline text-2xl tracking-wide glow-text-celestial">
+                Шёпот Залов Доблести
+              </h2>
+              <span class="text-xs opacity-40 uppercase tracking-widest">
+                Посмертный журнал героя
+              </span>
             </div>
+            <div class="text-right">
+              <div class="text-sm font-headline text-blue-300">
+                <%= @hero_state.hp %> / <%= @hero_state.max_hp %> HP
+              </div>
+              <div class="text-[10px] opacity-30">МЕНТАЛЬНОЕ ВОССТАНОВЛЕНИЕ</div>
+            </div>
+          </div>
 
-           <!-- Bottom Decor -->
-           <div class="p-4 bg-white/5 border-t border-white/5 flex justify-center gap-12 text-[10px] uppercase tracking-[0.3em] opacity-30">
-              <span>СИЛА: <%= @hero_state.intervention_power %></span>
-              <span>•</span>
-              <span>РЕЗОНАНС: ВЫСОКИЙ</span>
-              <span>•</span>
-              <span>ПОКОЙ: 100%</span>
-           </div>
+          <div class="flex-1 overflow-y-auto p-8 space-y-6">
+            <%= for entry <- sovngarde_logs(assigns) do %>
+              <div class="flex gap-6 group">
+                <div class="flex-shrink-0 w-1 pt-1">
+                  <div class="h-full w-full bg-gradient-to-b from-blue-400/50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <div class="text-xs text-blue-300/40 font-headline">
+                    <%= format_game_time(entry.game_time || @game_time) %>
+                  </div>
+                  <div class="text-lg font-light leading-relaxed text-blue-50/80 group-hover:text-white transition-colors">
+                    <%= entry.message %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <!-- Bottom Decor -->
+          <div class="p-4 bg-white/5 border-t border-white/5 flex justify-center gap-12 text-[10px] uppercase tracking-[0.3em] opacity-30">
+            <span>СИЛА: <%= @hero_state.intervention_power %></span>
+            <span>•</span>
+            <span>РЕЗОНАНС: ВЫСОКИЙ</span>
+            <span>•</span>
+            <span>ПОКОЙ: 100%</span>
+          </div>
         </div>
       </main>
     </div>
@@ -719,10 +1049,19 @@ defmodule GodvilleSkWeb.DashboardLive do
   end
 
   defp normal_logs(assigns) do
-    filter_logs_by_context(assigns.hero_state.log, :normal)
+    assigns.hero_state.log
+    |> filter_logs_by_context(:normal)
+    |> Enum.filter(fn entry ->
+      metadata = entry.metadata || %{}
+      metadata[:type] not in ["quest_event", "combat_roll", "initiative_roll"]
+    end)
   end
 
   defp sovngarde_logs(assigns) do
     filter_logs_by_context(assigns.hero_state.log, :sovngarde)
+  end
+
+  defp battle_logs(assigns) do
+    assigns.hero_state.battle_log || []
   end
 end

@@ -3,7 +3,7 @@ defmodule GodvilleSkWeb.UserSettingsLive do
 
   alias GodvilleSk.Accounts
   import GodvilleSkWeb.NavComponents
-  
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-col h-screen overflow-hidden bg-background">
@@ -12,16 +12,18 @@ defmodule GodvilleSkWeb.UserSettingsLive do
 
       <div class="flex-1 overflow-y-auto p-4 md:p-8">
         <div class="max-w-4xl mx-auto space-y-8">
-          
           <!-- Page Header -->
           <div class="relative pb-6 border-b border-border/40">
-            <h1 class="text-3xl font-headline text-primary tracking-widest uppercase">Настройки Профиля</h1>
-            <p class="text-foreground/50 font-body mt-1 italic">Имперский реестр: управление вашей сущностью и божественными атрибутами.</p>
+            <h1 class="text-3xl font-headline text-primary tracking-widest uppercase">
+              Настройки Профиля
+            </h1>
+            <p class="text-foreground/50 font-body mt-1 italic">
+              Имперский реестр: управление вашей сущностью и божественными атрибутами.
+            </p>
             <div class="absolute bottom-0 left-0 w-32 h-0.5 bg-primary/40"></div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
             <!-- LEFT COLUMN: Theme & Social -->
             <div class="space-y-8">
               <!-- DICE THEME CARD -->
@@ -32,147 +34,191 @@ defmodule GodvilleSkWeb.UserSettingsLive do
                   </svg>
                 </div>
                 <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                   </svg>
                   Оформление
                 </h2>
-                
+
                 <.form for={@theme_form} phx-submit="update_theme" class="space-y-4">
                   <div class="space-y-1.5">
-                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Тема костей D20</label>
-                    <select 
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Тема костей D20
+                    </label>
+                    <select
                       name="user[dice_theme]"
                       class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all cursor-pointer font-body"
                     >
                       <%= for {label, value} <- [{"Default (Dark Gold)", "default"}, {"Crimson (Dark Red)", "crimson"}, {"Obsidian (Black Gloss)", "obsidian"}, {"Sketch (Paper Teal)", "paper"}] do %>
-                        <option value={value} selected={value == @theme_form[:dice_theme].value}><%= label %></option>
+                        <option value={value} selected={value == @theme_form[:dice_theme].value}>
+                          <%= label %>
+                        </option>
                       <% end %>
                     </select>
                   </div>
-                  <button type="submit" class="w-full py-2 bg-primary/80 hover:bg-primary text-background font-headline text-xs tracking-widest transition-all shadow-lg active:translate-y-0.5">
+                  <button
+                    type="submit"
+                    class="w-full py-2 bg-primary/80 hover:bg-primary text-background font-headline text-xs tracking-widest transition-all shadow-lg active:translate-y-0.5"
+                  >
                     СОХРАНИТЬ ТЕМУ
                   </button>
                 </.form>
               </div>
-
               <!-- ACCOUNT INFO PREVIEW -->
-               <div class="bg-card/30 border border-border/20 p-6 backdrop-blur-sm">
-                 <h2 class="font-headline text-foreground/70 text-sm mb-4 uppercase tracking-widest">Текущий статус</h2>
-                 <div class="space-y-3">
-                    <div class="flex justify-between border-b border-border/10 pb-2">
-                      <span class="text-xs text-foreground/40 font-body">ID Пользователя</span>
-                      <span class="text-xs font-headline text-primary">#<%= @current_user.id %></span>
-                    </div>
-                    <div class="flex justify-between border-b border-border/10 pb-2">
-                       <span class="text-xs text-foreground/40 font-body">В реестре с</span>
-                       <span class="text-xs font-headline text-foreground/70"><%= Calendar.strftime(@current_user.inserted_at, "%d.%m.%Y") %></span>
-                    </div>
-                 </div>
-               </div>
+              <div class="bg-card/30 border border-border/20 p-6 backdrop-blur-sm">
+                <h2 class="font-headline text-foreground/70 text-sm mb-4 uppercase tracking-widest">
+                  Текущий статус
+                </h2>
+                <div class="space-y-3">
+                  <div class="flex justify-between border-b border-border/10 pb-2">
+                    <span class="text-xs text-foreground/40 font-body">ID Пользователя</span>
+                    <span class="text-xs font-headline text-primary">#<%= @current_user.id %></span>
+                  </div>
+                  <div class="flex justify-between border-b border-border/10 pb-2">
+                    <span class="text-xs text-foreground/40 font-body">В реестре с</span>
+                    <span class="text-xs font-headline text-foreground/70">
+                      <%= Calendar.strftime(@current_user.inserted_at, "%d.%m.%Y") %>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-
             <!-- RIGHT COLUMN: Security & Email -->
             <div class="space-y-8">
               <!-- EMAIL SETTINGS -->
               <div class="bg-card border border-border/50 p-6 relative">
-                 <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                     <polyline points="22,6 12,13 2,6" />
-                   </svg>
-                   Учетные данные
-                 </h2>
-                 
-                 <.form for={@email_form} phx-submit="update_email" class="space-y-6">
-                    <div class="space-y-1.5">
-                      <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Email Адрес</label>
-                       <input 
-                        type="email" 
-                        name="user[email]" 
-                        value={@email_form[:email].value}
-                        class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
-                       />
-                       <%= if error = List.first(@email_form[:email].errors) do %>
-                         <span class="text-[10px] text-red-400 font-body italic"><%= translate_error(error) %></span>
-                       <% end %>
-                    </div>
+                <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                  Учетные данные
+                </h2>
 
-                    <div class="space-y-1.5">
-                      <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Текущий пароль</label>
-                       <input 
-                        type="password" 
-                        name="current_password" 
-                        id="current_password_for_email"
-                        class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
-                       />
-                    </div>
-                    
-                    <button type="submit" class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20">
-                      ИЗМЕНИТЬ EMAIL
-                    </button>
-                 </.form>
+                <.form for={@email_form} phx-submit="update_email" class="space-y-6">
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Email Адрес
+                    </label>
+                    <input
+                      type="email"
+                      name="user[email]"
+                      value={@email_form[:email].value}
+                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                    />
+                    <%= if error = List.first(@email_form[:email].errors) do %>
+                      <span class="text-[10px] text-red-400 font-body italic">
+                        <%= translate_error(error) %>
+                      </span>
+                    <% end %>
+                  </div>
+
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Текущий пароль
+                    </label>
+                    <input
+                      type="password"
+                      name="current_password"
+                      id="current_password_for_email"
+                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20"
+                  >
+                    ИЗМЕНИТЬ EMAIL
+                  </button>
+                </.form>
               </div>
-
               <!-- PASSWORD SETTINGS -->
               <div class="bg-card border border-border/50 p-6">
                 <h2 class="font-headline text-primary mb-6 flex items-center gap-2">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
                   </svg>
                   Безопасность
                 </h2>
-                
-                <.form 
-                  for={@password_form} 
+
+                <.form
+                  for={@password_form}
                   action={~p"/users/log_in?_action=password_updated"}
                   method="post"
                   phx-submit="update_password"
                   phx-trigger-action={@trigger_submit}
                   class="space-y-4"
                 >
-                   <input name={@password_form[:email].name} type="hidden" value={@current_email} />
-                   
-                   <div class="space-y-1.5">
-                      <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Новый пароль</label>
-                      <input 
-                        type="password" 
-                        name="user[password]" 
-                        class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
-                      />
-                      <%= if error = List.first(@password_form[:password].errors) do %>
-                        <span class="text-[10px] text-red-400 font-body italic"><%= translate_error(error) %></span>
-                      <% end %>
-                   </div>
+                  <input name={@password_form[:email].name} type="hidden" value={@current_email} />
 
-                   <div class="space-y-1.5">
-                      <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Подтверждение пароля</label>
-                      <input 
-                        type="password" 
-                        name="user[password_confirmation]" 
-                        class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
-                      />
-                   </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Новый пароль
+                    </label>
+                    <input
+                      type="password"
+                      name="user[password]"
+                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                    />
+                    <%= if error = List.first(@password_form[:password].errors) do %>
+                      <span class="text-[10px] text-red-400 font-body italic">
+                        <%= translate_error(error) %>
+                      </span>
+                    <% end %>
+                  </div>
 
-                   <div class="space-y-1.5">
-                      <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">Текущий пароль</label>
-                      <input 
-                        type="password" 
-                        name="current_password" 
-                        id="current_password_for_password"
-                        class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
-                      />
-                   </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Подтверждение пароля
+                    </label>
+                    <input
+                      type="password"
+                      name="user[password_confirmation]"
+                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                    />
+                  </div>
 
-                   <button type="submit" class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20">
-                     ОБНОВИТЬ ПАРОЛЬ
-                   </button>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-headline text-foreground/60 uppercase tracking-widest">
+                      Текущий пароль
+                    </label>
+                    <input
+                      type="password"
+                      name="current_password"
+                      id="current_password_for_password"
+                      class="w-full bg-background/50 border border-border/40 text-foreground px-3 py-2 text-sm focus:border-primary outline-none transition-all font-body"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full py-2 bg-foreground/10 hover:bg-foreground/20 text-foreground font-headline text-xs tracking-widest transition-all border border-foreground/20"
+                  >
+                    ОБНОВИТЬ ПАРОЛЬ
+                  </button>
                 </.form>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
     </div>

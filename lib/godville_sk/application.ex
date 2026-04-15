@@ -9,9 +9,12 @@ defmodule GodvilleSk.Application do
       GodvilleSkWeb.Telemetry,
       GodvilleSk.Repo,
       {DNSCluster, query: Application.get_env(:godville_sk, :dns_cluster_query) || :ignore},
+      {Finch, name: GodvilleSk.Finch},
       {Phoenix.PubSub, name: GodvilleSk.PubSub},
       GodvilleSk.WorldClock,
       {DynamicSupervisor, name: GodvilleSk.HeroSupervisor, strategy: :one_for_one},
+      {DynamicSupervisor, name: GodvilleSk.ArenaSupervisor, strategy: :one_for_one},
+      GodvilleSk.Arena.Matchmaking,
       GodvilleSk.Game.Initializer,
       GodvilleSkWeb.Endpoint
     ]

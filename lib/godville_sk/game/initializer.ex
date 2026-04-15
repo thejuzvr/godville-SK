@@ -24,7 +24,9 @@ defmodule GodvilleSk.Game.Initializer do
     Enum.each(heroes, fn hero ->
       case Game.ensure_hero_running(hero) do
         {:ok, _pid} ->
-          nil # Success log handled by Hero init
+          # Success log handled by Hero init
+          nil
+
         {:error, reason} ->
           Logger.error("[Initializer] Failed to start hero '#{hero.name}': #{inspect(reason)}")
       end

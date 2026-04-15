@@ -6,6 +6,7 @@ defmodule GodvilleSk.Game.HeroLog do
   schema "hero_logs" do
     field :message, :string
     field :metadata, :map, default: %{}
+    field :game_time, :map
     belongs_to :hero, Hero
 
     timestamps(updated_at: false)
@@ -14,7 +15,7 @@ defmodule GodvilleSk.Game.HeroLog do
   @doc false
   def changeset(hero_log, attrs) do
     hero_log
-    |> cast(attrs, [:message, :hero_id, :metadata])
+    |> cast(attrs, [:message, :hero_id, :metadata, :game_time])
     |> validate_required([:message, :hero_id])
   end
 end

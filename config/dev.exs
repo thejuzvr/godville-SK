@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :godville_sk, GodvilleSk.Repo,
-  username: "godville_sk",
+  username: "godville",
   password: "Mo90p4mo!!!",
   hostname: "192.168.61.86",
-  database: "godville_sk",
+  database: "godville",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 20
@@ -83,3 +83,5 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :godville_sk, :tick_interval, dev: 2_000, prod: 10_000

@@ -81,7 +81,9 @@ defmodule GodvilleSk.WorldClock do
       last_snapshot: build_snapshot(started_at_real, started_at_real)
     }
 
-    Logger.info("[WorldClock] Engine started at #{started_at_real}. Initial game time: #{format_clock(state.last_snapshot.game_time)}")
+    Logger.info(
+      "[WorldClock] Engine started at #{started_at_real}. Initial game time: #{format_clock(state.last_snapshot.game_time)}"
+    )
 
     schedule_tick()
     {:ok, state}
@@ -100,7 +102,10 @@ defmodule GodvilleSk.WorldClock do
     # Heartbeat log every 60 real seconds (approx 60 game minutes)
     if rem(DateTime.diff(now, state.started_at_real), 60) == 0 do
       gt = snap.game_time
-      Logger.info("[World] Game Time: #{gt.day_name}, #{gt.day} #{gt.month} #{gt.year} - #{format_clock(gt)} (#{gt.weather})")
+
+      Logger.info(
+        "[World] Game Time: #{gt.day_name}, #{gt.day} #{gt.month} #{gt.year} - #{format_clock(gt)} (#{gt.weather})"
+      )
     end
 
     Phoenix.PubSub.broadcast(GodvilleSk.PubSub, @topic, {:world_update, snap})
@@ -180,4 +185,3 @@ defmodule GodvilleSk.WorldClock do
     }
   end
 end
-
